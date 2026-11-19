@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Pipeline Explorer 2000 | Cyber Vector Space & Tokenizer</title>
+  
+  <!-- Google Fonts for authentic Y2K Cyber aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            y2k: {
+              pink: '#ff007f',
+              hotpink: '#ff1493',
+              cyan: '#00f5ff',
+              acidgreen: '#39ff14',
+              neonlime: '#a6ff00',
+              purple: '#9d00ff',
+              laserblue: '#0066ff',
+              chrome: '#e2e8f0',
+              silver: '#94a3b8',
+              metal: '#1e2030',
+              darkbg: '#070814',
+              cardbg: '#0d0f22',
+            }
+          },
+          fontFamily: {
+            orbitron: ['Orbitron', 'sans-serif'],
+            pixel: ['Silkscreen', 'monospace'],
+            vt: ['VT323', 'monospace'],
+            grotesk: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'VT323', 'Courier New', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Plotly.js for high-performance interactive 3D WebGL plots -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <style>
+    /* =========================================================================
+       AUTHENTIC Y2K CYBER-AESTHETIC STYLING (CHROME, GEL, SCANLINES & BEVELS)
+       ========================================================================= */
+
+    /* Cyber scanlines overlay across the page */
+    body::before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 128, 0.02), rgba(0, 240, 255, 0.02), rgba(0, 255, 100, 0.02));
+      z-index: 99;
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    /* Cyberpunk / Y2K Background Grid */
+    body {
+      background-color: #060713;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(157, 0, 255, 0.18), transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(0, 245, 255, 0.12), transparent 45%),
+        radial-gradient(circle at 10% 70%, rgba(255, 0, 127, 0.12), transparent 40%),
+        linear-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      background-position: center top;
+      color: #e2e8f0;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+    }
+
+    /* Classic Y2K Chrome Bevel Window */
+    .y2k-window {
+      background: linear-gradient(180deg, #12152e 0%, #0a0c1b 100%);
+      border: 2px solid;
+      border-color: #5865f2 #1e1f38 #141529 #8c9eff;
+      box-shadow: 
+        0 0 0 1px #000,
+        0 8px 32px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(0, 245, 255, 0.15),
+        inset 1px 1px 0px rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      position: relative;
+    }
+
+    /* Window Title Bar (Mac OS 9 / Win98 Cyberpunk fusion) */
+    .y2k-titlebar {
+      background: linear-gradient(90deg, #9d00ff 0%, #ff007f 40%, #00f5ff 100%);
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #000;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .y2k-titlebar-silver {
+      background: linear-gradient(90deg, #334155 0%, #64748b 50%, #475569 100%);
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #000;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    /* Gel / Aqua 3D Buttons */
+    .y2k-btn {
+      background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 49%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.5) 100%), #1e293b;
+      border: 2px solid;
+      border-color: #7dd3fc #0369a1 #0c4a6e #bae6fd;
+      box-shadow: 
+        0 2px 4px rgba(0,0,0,0.6),
+        inset 0 1px 1px rgba(255,255,255,0.8);
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.12s ease;
+      cursor: pointer;
+    }
+    .y2k-btn:hover {
+      filter: brightness(1.2);
+      box-shadow: 0 0 14px rgba(0, 245, 255, 0.7), inset 0 1px 2px #fff;
+      transform: translateY(-1px);
+    }
+    .y2k-btn:active {
+      transform: translateY(1px);
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.8);
+      border-color: #0369a1 #7dd3fc #bae6fd #0c4a6e;
+    }
+
+    .y2k-btn-pink {
+      background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.5) 100%), #ff007f;
+      border-color: #ff99cc #b30059 #800040 #ffcce6;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .y2k-btn-pink:hover {
+      box-shadow: 0 0 16px rgba(255, 0, 127, 0.8), inset 0 1px 2px #fff;
+    }
+
+    .y2k-btn-green {
+      background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 49%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.5) 100%), #10b981;
+      border-color: #a7f3d0 #047857 #064e3b #d1fae5;
+      color: #042f2e;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+    }
+    .y2k-btn-green:hover {
+      box-shadow: 0 0 16px rgba(57, 255, 20, 0.8), inset 0 1px 2px #fff;
+    }
+
+    /* Window Minimize / Maximize / Close Buttons */
+    .win-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-family: 'Silkscreen', monospace;
+      font-weight: bold;
+      background: #c0c0c0;
+      color: #000;
+      border: 1px solid;
+      border-color: #fff #555 #555 #fff;
+      box-shadow: inset 1px 1px 0 #fff;
+      cursor: pointer;
+    }
+    .win-btn:active {
+      border-color: #555 #fff #fff #555;
+      box-shadow: inset 1px 1px 0 #000;
+    }
+    .win-btn-close {
+      background: #ff5f56;
+      border-color: #ff857d #990000 #990000 #ff857d;
+      color: #fff;
+    }
+
+    /* Chrome Metallic Text */
+    .chrome-text {
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 35%, #94a3b8 50%, #f8fafc 52%, #64748b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+    }
+
+    .neon-cyan-glow {
+      text-shadow: 0 0 8px rgba(0, 245, 255, 0.8), 0 0 20px rgba(0, 245, 255, 0.4);
+    }
+
+    .neon-pink-glow {
+      text-shadow: 0 0 8px rgba(255, 0, 127, 0.8), 0 0 20px rgba(255, 0, 127, 0.4);
+    }
+
+    .neon-green-glow {
+      text-shadow: 0 0 8px rgba(57, 255, 20, 0.8), 0 0 20px rgba(57, 255, 20, 0.4);
+    }
+
+    /* Inset Y2K Bevel Boxes (Displays & Inputs) */
+    .y2k-inset {
+      background: #080a18;
+      border: 2px solid;
+      border-color: #03040b #2b3052 #2b3052 #03040b;
+      box-shadow: inset 2px 2px 6px rgba(0,0,0,0.9);
+    }
+
+    /* Winamp EQ Slider Styling */
+    input[type=range].y2k-slider {
+      -webkit-appearance: none;
+      background: #050713;
+      height: 8px;
+      border-radius: 4px;
+      border: 1px solid #00f5ff;
+      box-shadow: inset 0 1px 3px #000, 0 0 6px rgba(0, 245, 255, 0.3);
+    }
+    input[type=range].y2k-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 14px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #ffffff 0%, #94a3b8 50%, #475569 100%);
+      border: 1px solid #fff;
+      box-shadow: 0 0 8px #ff007f, 0 2px 4px #000;
+      cursor: pointer;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080a18;
+      border: 1px solid #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #00f5ff 0%, #9d00ff 100%);
+      border: 1px solid #fff;
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,0.6);
+    }
+
+    /* Holographic CD Shimmer Animation */
+    @keyframes holographic {
+      0% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(180deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    .holo-tag {
+      animation: holographic 8s linear infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-y2k-pink selection:text-white pb-6">
+
+  <!-- Y2K System Banner / Window Shell Header -->
+  <header class="border-b-2 border-y2k-cyan/40 bg-y2k-darkbg/95 backdrop-blur sticky top-0 z-40 px-3 lg:px-6 py-2 shadow-lg shadow-y2k-cyan/10">
+    
+    <!-- Top System Strip -->
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-[11px] font-pixel text-slate-400 border-b border-slate-800 pb-1.5 mb-2">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 text-y2k-cyan neon-cyan-glow">
+          <span>●</span> SYSTEM_READY: v2.000_CYBER
+        </span>
+        <span class="hidden sm:inline text-slate-600">|</span>
+        <span class="hidden sm:inline text-y2k-pink">DEVICE: NEURAL_TENSOR_ENGINE</span>
+        <span class="hidden md:inline text-slate-600">|</span>
+        <span class="hidden md:inline text-y2k-acidgreen">MEM: 512MB OPTICAL RAM</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-1.5 py-0.5 rounded bg-y2k-purple/40 text-purple-200 border border-y2k-purple text-[9px] holo-tag">✦ Y2K EDITION ✦</span>
+        <span class="text-slate-500 font-mono text-[10px] hidden sm:inline">2000.11.19_NET</span>
+      </div>
+    </div>
+
+    <!-- Main Title & Navigation Area -->
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-y2k-pink via-y2k-purple to-y2k-cyan flex items-center justify-center border-2 border-white shadow-lg shadow-y2k-pink/40 transform -rotate-3 hover:rotate-0 transition">
+          <span class="text-lg">💿</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-orbitron font-black text-xl tracking-wider chrome-text uppercase">
+              LLM Pipeline Explorer
+            </h1>
+            <span class="font-pixel text-[9px] px-2 py-0.5 rounded bg-y2k-cyan text-slate-950 font-bold uppercase shadow-sm shadow-y2k-cyan">2000</span>
+          </div>
+          <p class="text-xs font-grotesk text-y2k-cyan/80 flex items-center gap-1">
+            <span>★</span> 3D Vector Space &bull; Subword BPE Tokenizer &bull; Cosine Similarity Matrix <span>★</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Hologram Displays -->
+      <div class="flex items-center gap-3 font-orbitron text-xs">
+        <div class="y2k-inset px-3 py-1.5 rounded flex items-center gap-2 border-y2k-cyan/40">
+          <span class="text-[10px] font-pixel text-y2k-silver">VOCAB:</span>
+          <span id="metric-vocab-count" class="font-bold text-y2k-acidgreen font-vt text-lg neon-green-glow">48</span>
+          <span class="text-[9px] text-slate-500 font-pixel">TOKS</span>
+        </div>
+        <div class="y2k-inset px-3 py-1.5 rounded flex items-center gap-2 border-y2k-pink/40">
+          <span class="text-[10px] font-pixel text-y2k-silver">DIM:</span>
+          <span class="font-bold text-y2k-pink font-vt text-lg neon-pink-glow">16-D</span>
+          <span class="text-[9px] text-y2k-cyan font-pixel">&rarr; 3D_PCA</span>
+        </div>
+        <div class="y2k-inset px-3 py-1.5 rounded hidden sm:flex items-center gap-2 border-purple-500/40">
+          <span class="text-[10px] font-pixel text-y2k-silver">GEOM:</span>
+          <span class="font-bold text-purple-300 font-vt text-lg">COSINE &ang;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrolling Y2K Marquee Ticker -->
+    <div class="max-w-7xl mx-auto mt-2 overflow-hidden border border-slate-800 bg-black/60 rounded px-2 py-0.5 text-[11px] font-pixel text-y2k-cyan">
+      <marquee scrollamount="6" class="leading-none tracking-widest">
+        ★★★ WELCOME TO LLM PIPELINE EXPLORER 2000 ★★★ FULL CLIENT-SIDE HIGH-DIMENSIONAL PCA ALGORITHM ★★★ ROTATE IN 3D HYPERSPACE ★★★ TEST ANALOGY: KING - MAN + WOMAN = QUEEN ★★★ ADD YOUR OWN CUSTOM TOKENS WITH 16-D SLIDERS ★★★
+      </marquee>
+    </div>
+
+    <!-- Y2K Beveled Tab Navigation -->
+    <div class="max-w-7xl mx-auto mt-2 pt-1 flex items-center overflow-x-auto gap-1.5 text-xs font-orbitron no-scrollbar">
+      <button onclick="switchTab('3d-graph')" id="tab-btn-3d-graph" class="tab-btn y2k-btn px-4 py-2 flex items-center gap-2 bg-gradient-to-r from-y2k-cyan/30 to-y2k-purple/40 border-y2k-cyan text-white shadow-lg shadow-y2k-cyan/20">
+        <span>🌐</span>
+        <span>3D Vector Graph</span>
+      </button>
+      <button onclick="switchTab('vocab')" id="tab-btn-vocab" class="tab-btn y2k-btn px-4 py-2 flex items-center gap-2 opacity-80 hover:opacity-100">
+        <span>📖</span>
+        <span>Tokenizer & Vocab</span>
+      </button>
+      <button onclick="switchTab('embeddings')" id="tab-btn-embeddings" class="tab-btn y2k-btn px-4 py-2 flex items-center gap-2 opacity-80 hover:opacity-100">
+        <span>🧬</span>
+        <span>Vector Math & 16D</span>
+      </button>
+      <button onclick="switchTab('custom-word')" id="tab-btn-custom-word" class="tab-btn y2k-btn y2k-btn-green px-4 py-2 flex items-center gap-2 opacity-80 hover:opacity-100">
+        <span>⚡</span>
+        <span>Add Custom Word</span>
+        <span class="text-[9px] px-1 bg-black text-y2k-acidgreen rounded font-pixel">NEW</span>
+      </button>
+      <button onclick="switchTab('similarity-lab')" id="tab-btn-similarity-lab" class="tab-btn y2k-btn px-4 py-2 flex items-center gap-2 opacity-80 hover:opacity-100">
+        <span>📊</span>
+        <span>Similarity Matrix</span>
+      </button>
+      <button onclick="switchTab('pipeline-guide')" id="tab-btn-pipeline-guide" class="tab-btn y2k-btn px-4 py-2 flex items-center gap-2 opacity-80 hover:opacity-100">
+        <span>🛸</span>
+        <span>Pipeline Guide</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 lg:p-6 space-y-6">
+
+    <!-- =========================================================================
+         TAB 1: 3D GRAPH VIEW (PRIMARY FEATURE)
+         ========================================================================= -->
+    <section id="view-3d-graph" class="tab-content block space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        
+        <!-- Main 3D Canvas Cyber Window (3 cols) -->
+        <div class="lg:col-span-3 y2k-window overflow-hidden flex flex-col">
+          <!-- Window Title Bar -->
+          <div class="y2k-titlebar">
+            <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-white uppercase tracking-wider">
+              <span>🛸</span>
+              <span>VECTOR_SPACE_3D_VIEWER.EXE</span>
+              <span class="text-[9px] font-pixel text-yellow-200">[OPENGL_WEBGL]</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="win-btn">_</span>
+              <span class="win-btn">&#9633;</span>
+              <span class="win-btn win-btn-close">&times;</span>
+            </div>
+          </div>
+
+          <!-- Controls Sub-Bar -->
+          <div class="p-2.5 bg-black/60 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-orbitron">
+            <div class="flex items-center gap-2">
+              <span class="text-y2k-cyan text-[11px] font-bold">PROJECTION_MODE:</span>
+              <select id="projection-mode" onchange="updateProjection()" class="y2k-inset text-y2k-acidgreen rounded px-2.5 py-1 text-xs font-mono focus:outline-none border border-y2k-cyan/40">
+                <option value="pca">PCA (Principal Component Analysis 16D &rarr; 3D)</option>
+                <option value="semantic">Semantic Axis: Royalty vs Tech vs Nature</option>
+                <option value="spherical">Unit Sphere Projection (Cosine Geometry)</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="reset3DCamera()" class="y2k-btn px-2.5 py-1 text-[10px] flex items-center gap-1">
+                <span>↺</span> Reset Camera
+              </button>
+              <button onclick="toggleAllLabels()" id="btn-toggle-labels" class="y2k-btn y2k-btn-pink px-2.5 py-1 text-[10px]">
+                Labels: Always On
+              </button>
+            </div>
+          </div>
+
+          <!-- Plotly 3D Container -->
+          <div id="plot3d" class="w-full h-[540px] bg-y2k-darkbg cursor-move"></div>
+
+          <!-- Bottom Status Strip & Cluster Badges -->
+          <div class="p-2.5 bg-black/80 border-t border-slate-800 text-xs font-grotesk text-slate-300 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2 text-[11px] font-mono">
+              <span class="text-y2k-cyan font-bold">✦ CLICK POINT</span> to inspect.
+              <span class="text-y2k-pink font-bold">✦ DRAG</span> to rotate.
+              <span class="text-y2k-acidgreen font-bold">✦ SCROLL</span> to zoom.
+            </div>
+            <div id="cluster-legend-badges" class="flex items-center gap-1.5 flex-wrap">
+              <!-- Filled dynamically with category badges -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Sidebar: Cyber Multimeter & Cosine Distance Meter (1 col) -->
+        <div class="space-y-4">
+          <!-- Selection & Comparison Card -->
+          <div class="y2k-window p-3.5 space-y-3.5">
+            <!-- Card Titlebar -->
+            <div class="y2k-titlebar -mx-3.5 -mt-3.5 mb-2">
+              <div class="font-orbitron font-bold text-[11px] text-white flex items-center gap-1">
+                <span>⚡</span> DISTANCE_INSPECTOR.MOD
+              </div>
+              <span class="font-pixel text-[9px] text-yellow-300">COSINE_L2</span>
+            </div>
+
+            <!-- Target Selection Dropdowns -->
+            <div class="space-y-2 text-xs font-orbitron">
+              <div>
+                <label class="block text-y2k-cyan text-[10px] mb-1 font-pixel">POINT_A (TARGET):</label>
+                <select id="select-word-a" onchange="onWordSelected('a')" class="w-full y2k-inset text-white rounded p-1.5 font-mono text-xs border border-slate-700 focus:border-y2k-cyan"></select>
+              </div>
+              <div>
+                <label class="block text-y2k-pink text-[10px] mb-1 font-pixel">POINT_B (COMPARE):</label>
+                <select id="select-word-b" onchange="onWordSelected('b')" class="w-full y2k-inset text-white rounded p-1.5 font-mono text-xs border border-slate-700 focus:border-y2k-pink"></select>
+              </div>
+            </div>
+
+            <!-- Digital Meter Box -->
+            <div id="distance-metrics-box" class="y2k-inset p-3 rounded space-y-2 border border-y2k-cyan/30">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-pixel text-slate-400">COSINE_SIMILARITY:</span>
+                <span id="metric-cos-sim" class="font-vt font-bold text-2xl text-y2k-acidgreen neon-green-glow">0.924</span>
+              </div>
+              
+              <!-- Winamp style LED VU bar -->
+              <div class="w-full bg-black rounded p-0.5 border border-slate-800">
+                <div class="w-full bg-slate-900 rounded-sm h-3 overflow-hidden flex">
+                  <div id="metric-cos-bar" class="bg-gradient-to-r from-y2k-cyan via-y2k-acidgreen to-y2k-pink h-3 transition-all duration-300" style="width: 92%"></div>
+                </div>
+              </div>
+
+              <!-- Angle & Euclidean Digital Displays -->
+              <div class="grid grid-cols-2 gap-2 pt-1 font-vt text-sm">
+                <div class="p-1.5 rounded bg-black/80 border border-slate-800">
+                  <div class="text-slate-400 text-[10px] font-pixel">ANGLE &theta;</div>
+                  <div id="metric-angle" class="text-y2k-cyan font-bold text-lg neon-cyan-glow">22.5&deg;</div>
+                </div>
+                <div class="p-1.5 rounded bg-black/80 border border-slate-800">
+                  <div class="text-slate-400 text-[10px] font-pixel">EUCLIDEAN_L2</div>
+                  <div id="metric-euclidean" class="text-y2k-pink font-bold text-lg neon-pink-glow">0.389</div>
+                </div>
+              </div>
+
+              <div class="text-[11px] text-slate-300 italic pt-1 border-t border-slate-800/80 font-grotesk leading-tight" id="distance-explanation">
+                High semantic alignment. Vectors point in virtually the same directional cluster.
+              </div>
+            </div>
+
+            <!-- Nearest Neighbors List -->
+            <div class="space-y-2">
+              <div class="text-[11px] font-orbitron font-bold text-slate-200 flex items-center justify-between">
+                <span>TOP 5 NEAREST:</span>
+                <span id="knn-target-label" class="text-y2k-cyan font-mono text-[10px]">[king]</span>
+              </div>
+              <div id="knn-list" class="space-y-1 max-h-44 overflow-y-auto pr-1 text-xs font-mono">
+                <!-- Dynamically filled list of top neighbors -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Analogy Presets Box -->
+          <div class="y2k-window p-3 space-y-2 text-xs">
+            <div class="y2k-titlebar-silver -mx-3 -mt-3 mb-2">
+              <span class="font-pixel text-[9px] text-white">★ PRESET_ANALOGIES</span>
+              <span class="win-btn">&#9633;</span>
+            </div>
+            <div class="flex flex-wrap gap-1 font-orbitron text-[10px]">
+              <button onclick="setCompareWords('king', 'queen')" class="y2k-btn px-2 py-1">👑 king &harr; queen</button>
+              <button onclick="setCompareWords('cat', 'dog')" class="y2k-btn px-2 py-1">🐾 cat &harr; dog</button>
+              <button onclick="setCompareWords('computer', 'robot')" class="y2k-btn px-2 py-1">🤖 computer &harr; robot</button>
+              <button onclick="setCompareWords('apple', 'banana')" class="y2k-btn px-2 py-1">🍎 apple &harr; banana</button>
+              <button onclick="setCompareWords('happy', 'sad')" class="y2k-btn px-2 py-1">🎭 happy &harr; sad</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 2: VOCABULARY & TOKENIZER
+         ========================================================================= -->
+    <section id="view-vocab" class="tab-content hidden space-y-6">
+      
+      <!-- Live Sentence Tokenizer Interactive Playground -->
+      <div class="y2k-window p-5 space-y-4">
+        <div class="y2k-titlebar -mx-5 -mt-5 mb-3">
+          <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-white">
+            <span>💾</span>
+            <span>SUBWORD_BPE_TOKENIZER.SYS</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="win-btn">_</span>
+            <span class="win-btn">&#9633;</span>
+            <span class="win-btn win-btn-close">&times;</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-orbitron font-bold text-white flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-y2k-pink text-white text-[10px] font-pixel">STAGE 1</span>
+              <span>Raw Text Decomposition & Token ID Mapping</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1 font-grotesk">Watch how strings translate into discrete vocabulary tokens and subword pieces.</p>
+          </div>
+          <!-- Presets -->
+          <div class="flex items-center gap-1.5 text-xs font-orbitron">
+            <span class="text-slate-400 text-[10px]">PRESETS:</span>
+            <button onclick="setTokenInput('The king and queen ruled the kingdom.')" class="y2k-btn px-2 py-1 text-[10px]">Royalty</button>
+            <button onclick="setTokenInput('Neural networks transform tokens into high dimensional vectors.')" class="y2k-btn px-2 py-1 text-[10px]">Deep Learning</button>
+            <button onclick="setTokenInput('Attention is all you need for language modeling.')" class="y2k-btn px-2 py-1 text-[10px]">Attention</button>
+          </div>
+        </div>
+
+        <!-- Input text box -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-pixel text-y2k-cyan">INPUT_STRING_BUFFER:</label>
+          <div class="flex gap-2">
+            <input id="tokenizer-input" type="text" value="The king and queen ruled the kingdom with wisdom." 
+                   class="flex-1 y2k-inset rounded px-4 py-2.5 text-sm text-y2k-acidgreen font-mono focus:outline-none border border-slate-700 focus:border-y2k-cyan"
+                   placeholder="Type any sentence...">
+            <button onclick="tokenizeInput()" class="y2k-btn y2k-btn-pink px-5 py-2.5 text-xs shadow-lg shadow-y2k-pink/30">
+              ⚡ TOKENIZE
+            </button>
+          </div>
+        </div>
+
+        <!-- Token Visual Breakdown -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-orbitron">
+            <span class="font-bold text-slate-200">EXTRACTED TOKENS (<span id="token-count-badge" class="text-y2k-pink font-vt text-lg">0</span>):</span>
+            <span class="text-slate-400 text-[10px] font-mono">HOVER TO INSPECT SUBWORD METADATA</span>
+          </div>
+          <!-- Token Pill Container -->
+          <div id="token-pills-container" class="flex flex-wrap gap-2 p-3.5 rounded y2k-inset min-h-[64px] items-center border border-y2k-cyan/30">
+            <!-- Dynamic token pills rendered here -->
+          </div>
+        </div>
+
+        <!-- Token ID Sequence Display -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+          <div class="y2k-inset p-3 rounded space-y-1.5 border border-slate-800">
+            <div class="text-slate-400 text-[10px] font-pixel flex items-center justify-between">
+              <span>TOKEN_ID_SEQUENCE: <code class="text-y2k-cyan">input_ids</code></span>
+              <button onclick="copyTokenIds()" class="text-xs text-y2k-acidgreen hover:underline font-mono">COPY_CLIPBOARD</button>
+            </div>
+            <div id="token-ids-raw" class="text-y2k-acidgreen font-vt text-base font-bold break-all bg-black p-2 rounded border border-slate-900 neon-green-glow">
+              [464, 4746, 290, 7862, 12845, 262, 10762, 351, 11454, 13]
+            </div>
+          </div>
+          <div class="y2k-inset p-3 rounded space-y-1.5 border border-slate-800">
+            <div class="text-slate-400 text-[10px] font-pixel">
+              <span>EMBEDDING_MATRIX_LOOKUP:</span>
+            </div>
+            <div class="text-slate-300 text-xs font-mono p-2 rounded bg-black border border-slate-900">
+              Tensor Shape: <span class="text-y2k-cyan font-bold">[seq_len &times; 16]</span> &bull; Op: <span class="text-y2k-pink font-bold">E[token_id] &in; &reals;<sup>16</sup></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Searchable Vocabulary Directory Table -->
+      <div class="y2k-window p-5 space-y-3">
+        <div class="y2k-titlebar-silver -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>📚</span> MODEL_VOCABULARY_DICTIONARY.DAT
+          </div>
+          <span class="font-pixel text-[9px] text-yellow-300">TOTAL: <span id="vocab-total-display">48</span></span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <p class="text-xs text-slate-400 font-grotesk">Each entry represents a discrete subword index in the vocabulary table mapped to its 16-D embedding.</p>
+          <!-- Search & Filter -->
+          <div class="flex items-center gap-2 font-orbitron text-xs">
+            <input id="vocab-search" type="text" oninput="filterVocabTable()" placeholder="Search tokens..." 
+                   class="y2k-inset rounded px-3 py-1.5 text-xs text-white placeholder-slate-500 border border-slate-700 focus:border-y2k-cyan">
+            <select id="vocab-category-filter" onchange="filterVocabTable()" class="y2k-inset text-slate-200 rounded px-3 py-1.5 text-xs border border-slate-700">
+              <option value="all">All Clusters</option>
+              <option value="Royalty">Royalty</option>
+              <option value="Animals">Animals</option>
+              <option value="Tech & AI">Tech & AI</option>
+              <option value="Food & Nature">Food & Nature</option>
+              <option value="Emotions">Emotions</option>
+              <option value="Locations">Locations</option>
+              <option value="Grammar & Syntax">Grammar & Syntax</option>
+              <option value="Custom">Custom Words</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Vocab Table -->
+        <div class="overflow-x-auto max-h-96 rounded y2k-inset border border-slate-800">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-black/90 text-y2k-cyan sticky top-0 border-b border-slate-800 uppercase text-[10px] font-pixel tracking-wider">
+              <tr>
+                <th class="py-2.5 px-4">Token ID</th>
+                <th class="py-2.5 px-4">Token String</th>
+                <th class="py-2.5 px-4">Semantic Cluster</th>
+                <th class="py-2.5 px-4">Vector Norm ||v||</th>
+                <th class="py-2.5 px-4">3D Projected Coord (x, y, z)</th>
+                <th class="py-2.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vocab-table-body" class="divide-y divide-slate-800/60 bg-y2k-darkbg">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 3: EMBEDDING VECTORS & MATH
+         ========================================================================= -->
+    <section id="view-embeddings" class="tab-content hidden space-y-6">
+      <!-- Vector Arithmetic Showcase: King - Man + Woman = Queen -->
+      <div class="y2k-window p-5 space-y-4">
+        <div class="y2k-titlebar -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>🧬</span> VECTOR_ALGEBRA_LAB.EXE
+          </div>
+          <span class="win-btn win-btn-close">&times;</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-orbitron font-bold text-white">Semantic Vector Geometry: King - Man + Woman &approx; Queen</h2>
+            <p class="text-xs text-slate-400 mt-1 font-grotesk">Perform vector algebra directly in the latent space: <span class="font-mono text-y2k-cyan font-bold">Vector(A) - Vector(B) + Vector(C) &approx; Target</span></p>
+          </div>
+          <div class="flex gap-1.5 font-orbitron text-[10px]">
+            <button onclick="setVectorFormula('king', 'man', 'woman')" class="y2k-btn px-2.5 py-1">👑 King - Man + Woman</button>
+            <button onclick="setVectorFormula('paris', 'france', 'japan')" class="y2k-btn px-2.5 py-1">🗼 Paris - France + Japan</button>
+            <button onclick="setVectorFormula('puppy', 'dog', 'cat')" class="y2k-btn px-2.5 py-1">🐱 Puppy - Dog + Cat</button>
+          </div>
+        </div>
+
+        <!-- Formula Builder Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-7 gap-3 items-center y2k-inset p-3.5 rounded border border-y2k-cyan/30">
+          <!-- Term A -->
+          <div class="sm:col-span-2">
+            <label class="block text-[10px] font-pixel text-y2k-cyan mb-1">VECTOR A (+)</label>
+            <select id="math-word-a" onchange="computeVectorArithmetic()" class="w-full y2k-inset text-white rounded p-1.5 text-xs font-mono border border-slate-700"></select>
+          </div>
+          <!-- Minus Sign -->
+          <div class="text-center font-bold text-y2k-pink text-xl font-orbitron">-</div>
+          <!-- Term B -->
+          <div class="sm:col-span-2">
+            <label class="block text-[10px] font-pixel text-y2k-pink mb-1">VECTOR B (-)</label>
+            <select id="math-word-b" onchange="computeVectorArithmetic()" class="w-full y2k-inset text-white rounded p-1.5 text-xs font-mono border border-slate-700"></select>
+          </div>
+          <!-- Plus Sign -->
+          <div class="text-center font-bold text-y2k-acidgreen text-xl font-orbitron">+</div>
+          <!-- Term C -->
+          <div class="sm:col-span-1">
+            <label class="block text-[10px] font-pixel text-y2k-acidgreen mb-1">VECTOR C (+)</label>
+            <select id="math-word-c" onchange="computeVectorArithmetic()" class="w-full y2k-inset text-white rounded p-1.5 text-xs font-mono border border-slate-700"></select>
+          </div>
+        </div>
+
+        <!-- Arithmetic Result Box -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Top nearest matches to result -->
+          <div class="md:col-span-2 y2k-inset rounded p-3.5 space-y-2 border border-slate-800">
+            <div class="flex items-center justify-between text-xs font-orbitron">
+              <span class="font-bold text-slate-200">CLOSEST VOCABULARY MATCHES:</span>
+              <span class="text-[10px] text-y2k-cyan font-mono">RANKED BY COSINE SIMILARITY</span>
+            </div>
+            <div id="math-result-ranks" class="space-y-1.5">
+              <!-- Dynamically populated matches -->
+            </div>
+          </div>
+
+          <!-- Formula Explainer -->
+          <div class="y2k-inset rounded p-3.5 space-y-2 text-xs font-grotesk border border-slate-800">
+            <h4 class="font-orbitron font-bold text-y2k-cyan text-xs">★ How It Works:</h4>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              Subtracting <span class="text-white font-mono font-bold">man</span> from <span class="text-white font-mono font-bold">king</span> isolates the abstract concept of <span class="text-yellow-300 font-bold">"royalty"</span> by eliminating the masculine gender direction.
+            </p>
+            <p class="text-slate-300 leading-relaxed text-[11px]">
+              Adding <span class="text-white font-mono font-bold">woman</span> re-introduces feminine gender back into the royalty vector, landing directly on <span class="text-y2k-acidgreen font-bold font-mono">queen</span> in 16D hyperspace!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Embedding Vector Inspector & Heatmap -->
+      <div class="y2k-window p-5 space-y-3">
+        <div class="y2k-titlebar-silver -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>🎛️</span> 16_DIMENSIONAL_EQUALIZER_HEATMAP.SYS
+          </div>
+          <span class="font-pixel text-[9px] text-y2k-acidgreen">STATUS: ACTIVE</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="text-sm font-orbitron font-bold text-white">Continuous Feature Dimension Visualizer</h3>
+            <p class="text-xs text-slate-400 font-grotesk">Inspect the raw floating-point features of any token before dimensional reduction.</p>
+          </div>
+          <div class="flex items-center gap-2 font-orbitron text-xs">
+            <label class="text-y2k-cyan text-[10px] font-pixel">SELECT WORD:</label>
+            <select id="inspect-vector-select" onchange="renderVectorHeatmap()" class="y2k-inset text-white rounded px-2.5 py-1 text-xs font-mono border border-slate-700"></select>
+          </div>
+        </div>
+
+        <!-- Vector Heatmap visualization -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-pixel text-slate-400">
+            <span>DIMENSIONS [d0 &rarr; d15]</span>
+            <span class="flex items-center gap-3 text-[10px]">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-y2k-pink"></span> Negative (-1.0)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-slate-900 border border-slate-700"></span> Zero (0.0)</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-y2k-acidgreen"></span> Positive (+1.0)</span>
+            </span>
+          </div>
+          <div id="vector-heatmap-grid" class="grid grid-cols-8 md:grid-cols-16 gap-1.5 p-3 rounded y2k-inset border border-slate-800">
+            <!-- 16 dimension value boxes -->
+          </div>
+        </div>
+
+        <!-- Raw Vector Values -->
+        <div class="y2k-inset p-2.5 rounded border border-slate-800">
+          <div class="text-[10px] text-slate-400 font-pixel mb-1">RAW_TENSOR &bull; Float32Array(16):</div>
+          <div id="raw-vector-output" class="font-mono text-xs text-y2k-cyan break-all bg-black p-2 rounded border border-slate-900"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 4: ADD YOUR OWN WORDS (CUSTOM VOCABULARY EXPANSION)
+         ========================================================================= -->
+    <section id="view-custom-word" class="tab-content hidden space-y-6">
+      <div class="y2k-window p-5 space-y-5">
+        <div class="y2k-titlebar -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>⚡</span> CYBER_SYNTHESIZER_2000.MOD
+          </div>
+          <span class="win-btn win-btn-close">&times;</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-orbitron font-bold text-white flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-y2k-acidgreen text-black text-[10px] font-pixel">INTERACTIVE</span>
+              <span>Inject Custom Tokens into the Model Pipeline</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1 font-grotesk">Define a custom word, calibrate its 16-D semantic sliders, and watch it project dynamically into the 3D space!</p>
+          </div>
+          <!-- Quick Preset packs -->
+          <div class="flex items-center gap-1.5 text-xs font-orbitron">
+            <span class="text-slate-400 text-[10px]">PRESETS:</span>
+            <button onclick="quickAddWord('cyborg', 'Sci-Fi', [0.1, 0.9, 0.4, 0.8, -0.2, 0.7, 0.5, 0.3, 0.1, 0.0, 0.2, -0.4, 0.6, 0.5, 0.1, 0.8])" class="y2k-btn px-2 py-1 text-[10px]">+ cyborg</button>
+            <button onclick="quickAddWord('dragon', 'Mythology', [0.7, -0.3, 0.9, 0.9, 0.6, 0.8, 0.9, 0.4, -0.5, 0.1, 0.8, 0.2, -0.2, 0.4, 0.7, -0.1])" class="y2k-btn px-2 py-1 text-[10px]">+ dragon</button>
+            <button onclick="quickAddWord('quantum', 'Physics', [0.0, 0.9, 0.2, 0.1, -0.1, 0.4, -0.2, 0.9, 0.8, 0.0, -0.1, -0.3, 0.8, 0.7, 0.1, 0.9])" class="y2k-btn px-2 py-1 text-[10px]">+ quantum</button>
+          </div>
+        </div>
+
+        <!-- Custom Word Creation Form -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <!-- Left: Word Name & Blend Generator -->
+          <div class="space-y-4">
+            <div class="y2k-inset p-3.5 rounded space-y-2.5 border border-slate-800">
+              <label class="block text-[10px] font-pixel text-y2k-cyan">1. TOKEN_NAME:</label>
+              <input id="new-word-name" type="text" placeholder="e.g. spaceship, wizard, matrix" 
+                     class="w-full y2k-inset rounded p-2 text-sm text-white font-mono border border-slate-700 focus:border-y2k-acidgreen">
+
+              <label class="block text-[10px] font-pixel text-y2k-cyan mt-2">2. CLUSTER_CATEGORY:</label>
+              <input id="new-word-category" type="text" placeholder="e.g. Sci-Fi, Magic, Cyber" 
+                     class="w-full y2k-inset rounded p-2 text-sm text-white font-mono border border-slate-700 focus:border-y2k-acidgreen">
+            </div>
+
+            <!-- Semantic Blend Mode (Synthesize from existing words) -->
+            <div class="y2k-inset p-3.5 rounded space-y-2.5 border border-y2k-pink/30">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-orbitron font-bold text-y2k-pink">⚡ BLEND_INTERPOLATOR:</span>
+                <span class="text-[9px] font-pixel text-slate-400">LERP</span>
+              </div>
+              <p class="text-[11px] text-slate-400 font-grotesk">Synthesize word vector as a weighted blend of two existing words:</p>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <select id="blend-word-1" class="y2k-inset text-white rounded p-1.5 font-mono text-xs border border-slate-700"></select>
+                <select id="blend-word-2" class="y2k-inset text-white rounded p-1.5 font-mono text-xs border border-slate-700"></select>
+              </div>
+              <div>
+                <div class="flex justify-between text-[11px] font-pixel text-slate-400">
+                  <span>RATIO: <span id="blend-val-label" class="text-y2k-acidgreen">50% / 50%</span></span>
+                </div>
+                <input id="blend-slider" type="range" min="0" max="100" value="50" oninput="updateBlendSlider()" class="w-full y2k-slider accent-y2k-pink mt-1">
+              </div>
+              <button onclick="applyWordBlend()" class="w-full y2k-btn py-1.5 text-[10px]">APPLY BLEND TO SLIDERS</button>
+            </div>
+
+            <button onclick="submitCustomWord()" class="w-full y2k-btn y2k-btn-green py-2.5 text-xs shadow-lg shadow-y2k-acidgreen/20">
+              &plus; INJECT WORD INTO 3D SPACE
+            </button>
+          </div>
+
+          <!-- Right: Semantic Feature Dimension Sliders -->
+          <div class="lg:col-span-2 y2k-inset p-4 rounded space-y-3 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xs font-orbitron font-bold text-white">16-DIMENSIONAL SEMANTIC SLIDERS</h3>
+                <p class="text-[11px] text-slate-400 font-grotesk">Tune the latent axes (-1.0 to +1.0) for this word vector</p>
+              </div>
+              <button onclick="randomizeCustomSliders()" class="y2k-btn px-2.5 py-1 text-[10px]">RANDOMIZE</button>
+            </div>
+
+            <!-- Slider Grid -->
+            <div id="feature-sliders-container" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs max-h-96 overflow-y-auto pr-2">
+              <!-- Dynamically populated 16 sliders with semantic labels -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Words Added History -->
+        <div class="border-t border-slate-800 pt-3 space-y-2">
+          <div class="flex items-center justify-between text-xs font-orbitron">
+            <span class="font-bold text-slate-200">USER_INJECTED_TOKENS (<span id="custom-words-count" class="text-y2k-acidgreen font-vt text-lg">0</span>):</span>
+            <button onclick="resetCustomWords()" class="text-y2k-pink hover:underline text-[10px] font-pixel">CLEAR_CUSTOM_WORDS</button>
+          </div>
+          <div id="custom-words-list" class="flex flex-wrap gap-2">
+            <span class="text-xs text-slate-500 italic font-mono">No custom words added yet. Add one above!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 5: SIMILARITY LAB & MATRIX
+         ========================================================================= -->
+    <section id="view-similarity-lab" class="tab-content hidden space-y-6">
+      <div class="y2k-window p-5 space-y-5">
+        <div class="y2k-titlebar -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>📊</span> COSINE_SIMILARITY_MATRIX.DAT
+          </div>
+          <span class="win-btn win-btn-close">&times;</span>
+        </div>
+
+        <div>
+          <h2 class="text-sm font-orbitron font-bold text-white">Pairwise Cosine Angle & Attention Logits</h2>
+          <p class="text-xs text-slate-400 mt-1 font-grotesk">Understanding the core mathematics of vector search and Transformer self-attention.</p>
+        </div>
+
+        <!-- Math Formulas in cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="y2k-inset p-3 rounded space-y-2 border border-y2k-cyan/30">
+            <span class="text-y2k-cyan font-bold font-pixel text-[10px]">1. COSINE_SIMILARITY</span>
+            <div class="p-2 bg-black rounded border border-slate-800 text-center font-mono text-y2k-acidgreen font-bold">
+              cos(&theta;) = (u &bull; v) / (||u|| &times; ||v||)
+            </div>
+            <p class="text-slate-400 text-[11px] font-grotesk">Measures angular alignment regardless of vector length. Bounds: -1.0 to +1.0.</p>
+          </div>
+
+          <div class="y2k-inset p-3 rounded space-y-2 border border-y2k-pink/30">
+            <span class="text-y2k-pink font-bold font-pixel text-[10px]">2. SCALED_DOT_PRODUCT (ATTENTION)</span>
+            <div class="p-2 bg-black rounded border border-slate-800 text-center font-mono text-y2k-pink font-bold">
+              Attention(Q,K,V) = softmax(QK<sup>T</sup> / &radic;d)V
+            </div>
+            <p class="text-slate-400 text-[11px] font-grotesk">The raw unnormalized dot-product powering the Transformer self-attention mechanism.</p>
+          </div>
+
+          <div class="y2k-inset p-3 rounded space-y-2 border border-purple-500/30">
+            <span class="text-purple-300 font-bold font-pixel text-[10px]">3. EUCLIDEAN_DISTANCE (L2)</span>
+            <div class="p-2 bg-black rounded border border-slate-800 text-center font-mono text-purple-300 font-bold">
+              d(u, v) = &radic;&sum;(u<sub>i</sub> - v<sub>i</sub>)&sup2;
+            </div>
+            <p class="text-slate-400 text-[11px] font-grotesk">Geometric straight-line distance, susceptible to the curse of dimensionality.</p>
+          </div>
+        </div>
+
+        <!-- Interactive Pairwise Matrix Heatmap -->
+        <div class="space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-xs font-orbitron font-bold text-white">PAIRWISE_COSINE_GRID</h3>
+            <div class="flex items-center gap-2 font-orbitron text-xs">
+              <span class="text-slate-400 text-[10px]">VIEW:</span>
+              <select id="matrix-cluster-select" onchange="renderSimilarityHeatmap()" class="y2k-inset text-y2k-cyan rounded px-2.5 py-1 text-xs border border-slate-700">
+                <option value="featured">Featured Comparison (12 words)</option>
+                <option value="royalty_vs_animals">Royalty vs Animals</option>
+                <option value="tech_vs_food">Technology vs Food</option>
+                <option value="all">Full Matrix (Dense)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="similarity-heatmap-container" class="overflow-x-auto y2k-inset p-3 rounded max-h-[460px] border border-slate-800">
+            <!-- Rendered similarity grid table -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TAB 6: END-TO-END PIPELINE WALKTHROUGH
+         ========================================================================= -->
+    <section id="view-pipeline-guide" class="tab-content hidden space-y-6">
+      <div class="y2k-window p-5 space-y-5">
+        <div class="y2k-titlebar -mx-5 -mt-5 mb-3">
+          <div class="font-orbitron font-bold text-xs text-white flex items-center gap-2">
+            <span>🛸</span> ARCHITECTURE_WALKTHROUGH.SYS
+          </div>
+          <span class="win-btn win-btn-close">&times;</span>
+        </div>
+
+        <div>
+          <h2 class="text-sm font-orbitron font-bold text-white">Transformer End-to-End Inference Pipeline</h2>
+          <p class="text-xs text-slate-400 mt-1 font-grotesk">Step-by-step walkthrough of how text transforms from characters to next-token predictions.</p>
+        </div>
+
+        <!-- Pipeline Steps Stepper -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-2.5 font-orbitron text-xs">
+          <div onclick="selectPipelineStep(1)" id="step-card-1" class="step-card p-3 rounded y2k-inset border-2 border-y2k-cyan cursor-pointer transition">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-pixel text-y2k-cyan">STAGE 1</span>
+              <span class="w-2 h-2 rounded-full bg-y2k-cyan"></span>
+            </div>
+            <div class="text-xs font-bold text-white">1. Tokenization</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-grotesk">Characters &rarr; Subword IDs</div>
+          </div>
+
+          <div onclick="selectPipelineStep(2)" id="step-card-2" class="step-card p-3 rounded y2k-inset border border-slate-800 cursor-pointer transition hover:border-slate-700">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-pixel text-y2k-pink">STAGE 2</span>
+              <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+            </div>
+            <div class="text-xs font-bold text-white">2. Embeddings</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-grotesk">IDs &rarr; Dense 16D Vectors</div>
+          </div>
+
+          <div onclick="selectPipelineStep(3)" id="step-card-3" class="step-card p-3 rounded y2k-inset border border-slate-800 cursor-pointer transition hover:border-slate-700">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-pixel text-purple-400">STAGE 3</span>
+              <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+            </div>
+            <div class="text-xs font-bold text-white">3. Positional Info</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-grotesk">Tokens + Positional Vector</div>
+          </div>
+
+          <div onclick="selectPipelineStep(4)" id="step-card-4" class="step-card p-3 rounded y2k-inset border border-slate-800 cursor-pointer transition hover:border-slate-700">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-pixel text-yellow-400">STAGE 4</span>
+              <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+            </div>
+            <div class="text-xs font-bold text-white">4. Self-Attention</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-grotesk">Q, K, V Cross Dot-Products</div>
+          </div>
+
+          <div onclick="selectPipelineStep(5)" id="step-card-5" class="step-card p-3 rounded y2k-inset border border-slate-800 cursor-pointer transition hover:border-slate-700">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-pixel text-y2k-acidgreen">STAGE 5</span>
+              <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+            </div>
+            <div class="text-xs font-bold text-white">5. Softmax & Sampling</div>
+            <div class="text-[10px] text-slate-400 mt-1 font-grotesk">Logits &rarr; Next Token</div>
+          </div>
+        </div>
+
+        <!-- Detailed Explainer Box for Selected Step -->
+        <div id="pipeline-step-detail" class="y2k-inset rounded p-5 border border-slate-800 space-y-3 font-grotesk">
+          <!-- Dynamically populated step details -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Y2K Retro Footer -->
+  <footer class="border-t-2 border-slate-800 bg-y2k-darkbg px-4 py-3 text-xs font-pixel text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <span class="text-y2k-pink">★</span>
+      <span class="text-white font-orbitron font-bold">LLM_PIPELINE_EXPLORER_2000</span>
+      <span class="text-slate-600">|</span>
+      <span>READY_FOR_CYBERSPACE</span>
+    </div>
+    <div class="flex items-center gap-3 text-[10px]">
+      <span class="text-y2k-cyan">HTML_SINGLE_FILE</span>
+      <span class="text-slate-600">&bull;</span>
+      <span class="text-y2k-acidgreen">PCA_POWER_ITERATION</span>
+      <span class="text-slate-600">&bull;</span>
+      <span class="text-purple-300">WEBGL_3D</span>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       JAVASCRIPT APPLICATION CORE (PRESERVES ALL FUNCTIONALITY)
+       ========================================================================= */ -->
+  <script>
+    /* =========================================================================
+       1. DATA STRUCTURES & PRESET VOCABULARY EMBEDDINGS (16-DIMENSIONAL)
+       ========================================================================= */
+
+    const FEATURE_NAMES = [
+      { id: 0, name: "Royalty / Monarch", desc: "Crowns, rulers, imperial status" },
+      { id: 1, name: "Tech & Computation", desc: "Circuits, algorithms, digital" },
+      { id: 2, name: "Animal / Fauna", desc: "Zoological, wild/domestic creatures" },
+      { id: 3, name: "Living Entity", desc: "Biological, organic organism" },
+      { id: 4, name: "Femininity", desc: "Female gender association" },
+      { id: 5, name: "Masculinity", desc: "Male gender association" },
+      { id: 6, name: "Physical Size", desc: "Large scale, grand physical scale" },
+      { id: 7, name: "Abstract / Thought", desc: "Ideas, philosophy, intangibles" },
+      { id: 8, name: "Food & Sustenance", desc: "Edible, culinary, nutrition" },
+      { id: 9, name: "Location / Geography", desc: "Places, cities, territories" },
+      { id: 10, name: "Positive Sentiment", desc: "Joy, triumph, optimism" },
+      { id: 11, name: "Negative Sentiment", desc: "Sorrow, fear, hostility" },
+      { id: 12, name: "Action / Dynamism", desc: "Movement, velocity, verbs" },
+      { id: 13, name: "Modernity", desc: "21st-century, futuristic" },
+      { id: 14, name: "Nature & Ecology", desc: "Forests, flora, biosphere" },
+      { id: 15, name: "Intelligence & Mind", desc: "Cognition, learning, reason" }
+    ];
+
+    const INITIAL_VOCAB = [
+      // Royalty Cluster
+      { id: 1001, token: "king", category: "Royalty", vector: [0.95, -0.2, 0.1, 0.9, -0.4, 0.9, 0.7, 0.5, -0.3, 0.3, 0.4, 0.1, 0.2, -0.5, -0.1, 0.6] },
+      { id: 1002, token: "queen", category: "Royalty", vector: [0.95, -0.2, 0.1, 0.9, 0.9, -0.4, 0.6, 0.5, -0.3, 0.3, 0.5, 0.0, 0.2, -0.5, -0.1, 0.7] },
+      { id: 1003, token: "prince", category: "Royalty", vector: [0.85, -0.1, 0.1, 0.9, -0.3, 0.8, 0.4, 0.3, -0.2, 0.2, 0.5, 0.0, 0.4, -0.3, -0.1, 0.5] },
+      { id: 1004, token: "princess", category: "Royalty", vector: [0.85, -0.1, 0.1, 0.9, 0.8, -0.3, 0.3, 0.3, -0.2, 0.2, 0.6, 0.0, 0.4, -0.3, -0.1, 0.5] },
+      { id: 1005, token: "crown", category: "Royalty", vector: [0.90, -0.3, -0.4, -0.6, 0.1, 0.1, 0.2, 0.7, -0.5, 0.1, 0.6, -0.1, -0.2, -0.4, -0.2, 0.2] },
+      { id: 1006, token: "castle", category: "Royalty", vector: [0.80, -0.4, -0.5, -0.7, 0.0, 0.1, 0.9, 0.4, -0.4, 0.8, 0.4, 0.1, -0.3, -0.6, 0.1, 0.3] },
+      { id: 1007, token: "man", category: "Royalty", vector: [0.10, 0.1, 0.2, 0.9, -0.5, 0.9, 0.4, 0.2, -0.1, 0.1, 0.1, 0.0, 0.3, 0.2, 0.1, 0.7] },
+      { id: 1008, token: "woman", category: "Royalty", vector: [0.10, 0.1, 0.2, 0.9, 0.9, -0.5, 0.3, 0.2, -0.1, 0.1, 0.2, 0.0, 0.3, 0.2, 0.1, 0.7] },
+
+      // Animals Cluster
+      { id: 1010, token: "dog", category: "Animals", vector: [-0.4, -0.5, 0.95, 0.9, -0.1, 0.2, 0.4, -0.3, -0.2, 0.1, 0.8, -0.2, 0.7, -0.3, 0.6, 0.5] },
+      { id: 1011, token: "cat", category: "Animals", vector: [-0.4, -0.5, 0.95, 0.9, 0.3, -0.1, 0.1, -0.3, -0.2, 0.1, 0.6, -0.1, 0.6, -0.3, 0.6, 0.6] },
+      { id: 1012, token: "puppy", category: "Animals", vector: [-0.4, -0.5, 0.95, 0.9, 0.0, 0.0, -0.2, -0.4, -0.2, 0.0, 0.95, -0.3, 0.8, -0.3, 0.6, 0.3] },
+      { id: 1013, token: "wolf", category: "Animals", vector: [-0.2, -0.6, 0.90, 0.9, -0.1, 0.4, 0.6, -0.2, -0.3, 0.3, 0.2, 0.4, 0.8, -0.5, 0.9, 0.6] },
+      { id: 1014, token: "lion", category: "Animals", vector: [0.45, -0.5, 0.95, 0.9, -0.2, 0.6, 0.8, 0.1, -0.3, 0.4, 0.4, 0.2, 0.8, -0.5, 0.8, 0.6] },
+      { id: 1015, token: "tiger", category: "Animals", vector: [0.35, -0.5, 0.95, 0.9, -0.1, 0.5, 0.8, 0.0, -0.3, 0.4, 0.3, 0.3, 0.85, -0.5, 0.8, 0.6] },
+      { id: 1016, token: "bird", category: "Animals", vector: [-0.3, -0.5, 0.90, 0.8, 0.0, 0.0, -0.4, -0.2, -0.3, 0.2, 0.5, -0.1, 0.8, -0.4, 0.9, 0.4] },
+
+      // Technology & AI Cluster
+      { id: 1020, token: "computer", category: "Tech & AI", vector: [-0.2, 0.95, -0.6, -0.7, 0.0, 0.0, 0.2, 0.7, -0.6, 0.1, 0.2, -0.1, 0.2, 0.9, -0.6, 0.85] },
+      { id: 1021, token: "robot", category: "Tech & AI", vector: [-0.1, 0.95, -0.3, -0.2, -0.1, 0.1, 0.5, 0.6, -0.6, 0.0, 0.1, 0.1, 0.7, 0.95, -0.7, 0.8] },
+      { id: 1022, token: "algorithm", category: "Tech & AI", vector: [-0.1, 0.90, -0.7, -0.8, 0.0, 0.0, -0.1, 0.95, -0.7, 0.0, 0.2, -0.1, 0.3, 0.9, -0.7, 0.95] },
+      { id: 1023, token: "network", category: "Tech & AI", vector: [0.0, 0.85, -0.5, -0.6, 0.0, 0.0, 0.6, 0.8, -0.6, 0.4, 0.2, -0.1, 0.5, 0.85, -0.5, 0.8] },
+      { id: 1024, token: "intelligence", category: "Tech & AI", vector: [0.2, 0.75, 0.1, 0.4, 0.0, 0.0, 0.4, 0.9, -0.4, 0.1, 0.6, -0.2, 0.3, 0.8, 0.1, 0.99] },
+      { id: 1025, token: "software", category: "Tech & AI", vector: [-0.2, 0.95, -0.7, -0.8, 0.0, 0.0, -0.2, 0.85, -0.7, 0.1, 0.2, -0.1, 0.4, 0.95, -0.7, 0.85] },
+      { id: 1026, token: "transformer", category: "Tech & AI", vector: [0.1, 0.90, -0.5, -0.6, 0.0, 0.0, 0.5, 0.8, -0.6, 0.1, 0.4, -0.1, 0.6, 0.95, -0.6, 0.9] },
+
+      // Food & Consumables Cluster
+      { id: 1030, token: "apple", category: "Food & Nature", vector: [-0.3, -0.2, -0.5, 0.2, 0.1, -0.1, -0.4, -0.4, 0.95, 0.1, 0.6, -0.2, -0.2, -0.1, 0.8, -0.5] },
+      { id: 1031, token: "banana", category: "Food & Nature", vector: [-0.4, -0.3, -0.5, 0.2, 0.0, 0.1, -0.3, -0.4, 0.95, 0.2, 0.6, -0.2, -0.2, -0.1, 0.8, -0.5] },
+      { id: 1032, token: "pizza", category: "Food & Nature", vector: [-0.3, -0.1, -0.5, -0.4, 0.0, 0.0, 0.1, -0.5, 0.95, 0.3, 0.8, -0.1, -0.3, 0.4, -0.4, -0.5] },
+      { id: 1033, token: "burger", category: "Food & Nature", vector: [-0.3, -0.1, -0.5, -0.4, -0.1, 0.2, 0.2, -0.5, 0.95, 0.2, 0.7, -0.1, -0.3, 0.4, -0.4, -0.5] },
+      { id: 1034, token: "water", category: "Food & Nature", vector: [-0.2, -0.3, -0.5, 0.1, 0.1, 0.0, 0.3, 0.3, 0.85, 0.4, 0.7, -0.2, 0.5, -0.4, 0.95, -0.3] },
+      { id: 1035, token: "coffee", category: "Food & Nature", vector: [-0.1, 0.2, -0.5, -0.2, 0.0, 0.0, -0.3, 0.1, 0.90, 0.3, 0.7, -0.1, 0.4, 0.5, 0.4, 0.3] },
+
+      // Emotions & Psychology Cluster
+      { id: 1040, token: "happy", category: "Emotions", vector: [0.1, -0.1, 0.1, 0.3, 0.2, 0.0, 0.3, 0.9, -0.1, 0.0, 0.98, -0.9, 0.5, 0.1, 0.2, 0.4] },
+      { id: 1041, token: "joy", category: "Emotions", vector: [0.2, -0.1, 0.1, 0.2, 0.2, 0.0, 0.4, 0.95, -0.1, 0.0, 0.99, -0.95, 0.6, 0.1, 0.3, 0.4] },
+      { id: 1042, token: "sad", category: "Emotions", vector: [-0.1, -0.1, 0.0, 0.2, 0.0, 0.0, -0.3, 0.85, -0.2, 0.0, -0.85, 0.95, -0.5, -0.1, -0.1, 0.3] },
+      { id: 1043, token: "grief", category: "Emotions", vector: [-0.1, -0.2, 0.0, 0.2, 0.1, 0.0, 0.4, 0.95, -0.3, 0.0, -0.95, 0.98, -0.6, -0.2, -0.1, 0.4] },
+      { id: 1044, token: "angry", category: "Emotions", vector: [0.0, -0.1, 0.2, 0.4, -0.1, 0.2, 0.4, 0.8, -0.2, 0.0, -0.7, 0.85, 0.9, 0.0, -0.1, 0.2] },
+      { id: 1045, token: "love", category: "Emotions", vector: [0.3, -0.2, 0.2, 0.6, 0.4, 0.2, 0.6, 0.99, 0.0, 0.1, 0.98, -0.8, 0.5, 0.0, 0.4, 0.6] },
+
+      // Locations & Cities Cluster
+      { id: 1050, token: "paris", category: "Locations", vector: [0.4, 0.2, -0.5, -0.7, 0.3, 0.0, 0.7, 0.4, 0.4, 0.99, 0.7, -0.1, 0.3, 0.7, 0.1, 0.5] },
+      { id: 1051, token: "france", category: "Locations", vector: [0.3, 0.1, -0.4, -0.7, 0.1, 0.0, 0.9, 0.5, 0.5, 0.99, 0.6, -0.1, 0.2, 0.6, 0.4, 0.5] },
+      { id: 1052, token: "tokyo", category: "Locations", vector: [0.3, 0.85, -0.5, -0.7, 0.0, 0.0, 0.8, 0.5, 0.4, 0.99, 0.7, -0.1, 0.7, 0.98, 0.1, 0.7] },
+      { id: 1053, token: "japan", category: "Locations", vector: [0.4, 0.80, -0.4, -0.7, 0.0, 0.0, 0.8, 0.6, 0.5, 0.99, 0.7, -0.1, 0.5, 0.92, 0.5, 0.7] },
+      { id: 1054, token: "london", category: "Locations", vector: [0.6, 0.4, -0.5, -0.7, 0.0, 0.2, 0.8, 0.5, 0.3, 0.99, 0.6, -0.1, 0.4, 0.75, 0.2, 0.6] },
+
+      // Grammar & Function Tokens
+      { id: 1060, token: "the", category: "Grammar & Syntax", vector: [0.0, 0.0, -0.2, -0.2, 0.0, 0.0, 0.0, 0.2, -0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] },
+      { id: 1061, token: "is", category: "Grammar & Syntax", vector: [0.0, 0.0, -0.1, 0.1, 0.0, 0.0, 0.0, 0.3, -0.2, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.1] },
+      { id: 1062, token: "and", category: "Grammar & Syntax", vector: [0.0, 0.0, -0.1, -0.1, 0.0, 0.0, 0.0, 0.2, -0.1, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0] },
+      { id: 1063, token: "attention", category: "Tech & AI", vector: [0.1, 0.8, 0.0, 0.3, 0.0, 0.0, 0.3, 0.9, -0.2, 0.0, 0.4, -0.1, 0.5, 0.8, 0.0, 0.9] },
+      { id: 1064, token: "vector", category: "Tech & AI", vector: [0.0, 0.9, -0.6, -0.7, 0.0, 0.0, 0.2, 0.9, -0.5, 0.1, 0.2, 0.0, 0.4, 0.8, -0.3, 0.9] }
+    ];
+
+    let vocabulary = JSON.parse(JSON.stringify(INITIAL_VOCAB));
+    let customWords = [];
+    let currentProjectionMode = 'pca';
+    let projected3DCoords = {};
+    let labelsAlwaysOn = true;
+    let selectedWordA = 'king';
+    let selectedWordB = 'queen';
+
+    // Authentic Y2K Neon/Cyber Palette for 3D Clusters
+    const CLUSTER_COLORS = {
+      'Royalty': '#ffe600',        // Cyber Yellow / Gold
+      'Animals': '#39ff14',        // Acid Lime
+      'Tech & AI': '#00f5ff',      // Neon Cyan
+      'Food & Nature': '#ff6600',  // Cyber Orange
+      'Emotions': '#ff007f',       // Bubblegum Hot Pink
+      'Locations': '#b026ff',      // Ultraviolet Purple
+      'Grammar & Syntax': '#a0c0d0', // Ice Chrome Silver
+      'Custom': '#00ffaa',         // Hyper Emerald
+      'Sci-Fi': '#00f5ff',
+      'Mythology': '#ff007f',
+      'Physics': '#a855f7'
+    };
+
+    /* =========================================================================
+       2. VECTOR MATHEMATICS & PCA DIMENSIONAL REDUCTION
+       ========================================================================= */
+
+    function dotProduct(a, b) {
+      let sum = 0;
+      for (let i = 0; i < a.length; i++) sum += a[i] * b[i];
+      return sum;
+    }
+
+    function vectorNorm(v) {
+      return Math.sqrt(dotProduct(v, v)) || 1e-9;
+    }
+
+    function normalize(v) {
+      const norm = vectorNorm(v);
+      return v.map(x => x / norm);
+    }
+
+    function cosineSimilarity(a, b) {
+      const normA = vectorNorm(a);
+      const normB = vectorNorm(b);
+      return dotProduct(a, b) / (normA * normB);
+    }
+
+    function euclideanDistance(a, b) {
+      let sum = 0;
+      for (let i = 0; i < a.length; i++) {
+        const diff = a[i] - b[i];
+        sum += diff * diff;
+      }
+      return Math.sqrt(sum);
+    }
+
+    function computePCA3D(dataVectors) {
+      const n = dataVectors.length;
+      const d = dataVectors[0].length;
+
+      // 1. Compute mean
+      const mean = new Array(d).fill(0);
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < d; j++) {
+          mean[j] += dataVectors[i][j];
+        }
+      }
+      for (let j = 0; j < d; j++) mean[j] /= n;
+
+      // 2. Center
+      const centered = dataVectors.map(vec => vec.map((val, j) => val - mean[j]));
+
+      // 3. Covariance
+      const cov = Array.from({ length: d }, () => new Array(d).fill(0));
+      for (let i = 0; i < d; i++) {
+        for (let j = 0; j < d; j++) {
+          let sum = 0;
+          for (let k = 0; k < n; k++) {
+            sum += centered[k][i] * centered[k][j];
+          }
+          cov[i][j] = sum / (n - 1);
+        }
+      }
+
+      // 4. Power Iteration with Gram-Schmidt
+      const eigenvectors = [];
+      for (let e = 0; e < 3; e++) {
+        let v = Array.from({ length: d }, (_, idx) => Math.sin(idx + 1 + e * 3.7));
+        v = normalize(v);
+
+        for (let iter = 0; iter < 45; iter++) {
+          const vNext = new Array(d).fill(0);
+          for (let i = 0; i < d; i++) {
+            for (let j = 0; j < d; j++) {
+              vNext[i] += cov[i][j] * v[j];
+            }
+          }
+
+          for (let prev = 0; prev < eigenvectors.length; prev++) {
+            const proj = dotProduct(vNext, eigenvectors[prev]);
+            for (let j = 0; j < d; j++) {
+              vNext[j] -= proj * eigenvectors[prev][j];
+            }
+          }
+
+          v = normalize(vNext);
+        }
+        eigenvectors.push(v);
+      }
+
+      // 5. Project onto 3 principal axes
+      return centered.map(vec => [
+        dotProduct(vec, eigenvectors[0]) * 1.5,
+        dotProduct(vec, eigenvectors[1]) * 1.5,
+        dotProduct(vec, eigenvectors[2]) * 1.5
+      ]);
+    }
+
+    function computeSemanticAxisProjection(vectors) {
+      return vectors.map(v => [
+        (v[0] - v[8]) * 1.8,
+        (v[1] - v[2]) * 1.8,
+        (v[14] - v[11]) * 1.8
+      ]);
+    }
+
+    function computeSphericalProjection(vectors) {
+      return vectors.map(v => {
+        const u = normalize(v);
+        return [
+          u[0] * 1.2 + u[6] * 0.5,
+          u[1] * 1.2 + u[13] * 0.5,
+          u[2] * 1.2 + u[10] * 0.5
+        ];
+      });
+    }
+
+    function recalculate3DPositions() {
+      const vectors = vocabulary.map(item => item.vector);
+      let coords;
+
+      if (currentProjectionMode === 'semantic') {
+        coords = computeSemanticAxisProjection(vectors);
+      } else if (currentProjectionMode === 'spherical') {
+        coords = computeSphericalProjection(vectors);
+      } else {
+        coords = computePCA3D(vectors);
+      }
+
+      projected3DCoords = {};
+      vocabulary.forEach((item, idx) => {
+        projected3DCoords[item.token] = coords[idx];
+      });
+    }
+
+    /* =========================================================================
+       3. 3D GRAPH VISUALIZATION (Y2K CYBER-THEMED PLOTLY SCATTER3D)
+       ========================================================================= */
+
+    function render3DGraph() {
+      recalculate3DPositions();
+
+      const clusters = {};
+      vocabulary.forEach(item => {
+        const cat = item.category || 'Other';
+        if (!clusters[cat]) clusters[cat] = [];
+        clusters[cat].push(item);
+      });
+
+      const traces = [];
+
+      for (const [category, items] of Object.entries(clusters)) {
+        const color = CLUSTER_COLORS[category] || '#00f5ff';
+        const x = items.map(w => projected3DCoords[w.token][0]);
+        const y = items.map(w => projected3DCoords[w.token][1]);
+        const z = items.map(w => projected3DCoords[w.token][2]);
+        const text = items.map(w => `<b>${w.token}</b>`);
+        const hoverinfo = items.map(w => `
+          ★ TOKEN: ${w.token.toUpperCase()} ★<br>
+          Cluster: ${category}<br>
+          Token ID: ${w.id}<br>
+          Vector Norm: ${vectorNorm(w.vector).toFixed(3)}<br>
+          3D Coord: (${projected3DCoords[w.token][0].toFixed(2)}, ${projected3DCoords[w.token][1].toFixed(2)}, ${projected3DCoords[w.token][2].toFixed(2)})
+        `);
+
+        traces.push({
+          type: 'scatter3d',
+          mode: labelsAlwaysOn ? 'markers+text' : 'markers',
+          name: category,
+          x: x,
+          y: y,
+          z: z,
+          text: text,
+          textposition: 'top center',
+          textfont: {
+            family: 'Orbitron, monospace',
+            size: 11,
+            color: '#f8fafc'
+          },
+          hovertext: hoverinfo,
+          hoverinfo: 'text',
+          marker: {
+            size: items.map(w => (w.token === selectedWordA || w.token === selectedWordB) ? 11 : 6.5),
+            color: color,
+            opacity: 0.95,
+            symbol: 'circle',
+            line: {
+              color: items.map(w => (w.token === selectedWordA || w.token === selectedWordB) ? '#ffffff' : '#000000'),
+              width: items.map(w => (w.token === selectedWordA || w.token === selectedWordB) ? 3.5 : 1)
+            }
+          }
+        });
+      }
+
+      // Add connecting laser distance line between Word A and Word B
+      if (projected3DCoords[selectedWordA] && projected3DCoords[selectedWordB]) {
+        const posA = projected3DCoords[selectedWordA];
+        const posB = projected3DCoords[selectedWordB];
+
+        traces.push({
+          type: 'scatter3d',
+          mode: 'lines',
+          name: 'Distance Vector',
+          x: [posA[0], posB[0]],
+          y: [posA[1], posB[1]],
+          z: [posA[2], posB[2]],
+          line: {
+            color: '#ff007f', // Laser Pink Beam
+            width: 7,
+            dash: 'solid'
+          },
+          hoverinfo: 'none',
+          showlegend: false
+        });
+      }
+
+      const layout = {
+        paper_bgcolor: '#070814',
+        plot_bgcolor: '#070814',
+        margin: { l: 0, r: 0, b: 0, t: 0 },
+        showlegend: true,
+        legend: {
+          x: 0.02,
+          y: 0.98,
+          font: { family: 'Orbitron, sans-serif', size: 9.5, color: '#00f5ff' },
+          bgcolor: 'rgba(8, 10, 24, 0.9)',
+          bordercolor: '#00f5ff',
+          borderwidth: 1
+        },
+        scene: {
+          xaxis: {
+            title: currentProjectionMode === 'semantic' ? 'Royalty &harr; Food' : 'Principal Comp 1',
+            color: '#00f5ff',
+            gridcolor: '#1a1f3d',
+            showbackground: true,
+            backgroundcolor: '#04050d',
+            zerolinecolor: '#ff007f'
+          },
+          yaxis: {
+            title: currentProjectionMode === 'semantic' ? 'Tech &harr; Animal' : 'Principal Comp 2',
+            color: '#39ff14',
+            gridcolor: '#1a1f3d',
+            showbackground: true,
+            backgroundcolor: '#04050d',
+            zerolinecolor: '#ff007f'
+          },
+          zaxis: {
+            title: currentProjectionMode === 'semantic' ? 'Nature &harr; Emotion' : 'Principal Comp 3',
+            color: '#ff007f',
+            gridcolor: '#1a1f3d',
+            showbackground: true,
+            backgroundcolor: '#04050d',
+            zerolinecolor: '#00f5ff'
+          },
+          camera: {
+            eye: { x: 1.5, y: 1.5, z: 1.2 }
+          }
+        }
+      };
+
+      const config = {
+        responsive: true,
+        displayModeBar: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: ['resetCameraLastSave3d']
+      };
+
+      Plotly.react('plot3d', traces, layout, config);
+
+      const plotEl = document.getElementById('plot3d');
+      plotEl.removeAllListeners?.('plotly_click');
+      plotEl.on('plotly_click', function(data) {
+        if (data.points && data.points.length > 0) {
+          const pt = data.points[0];
+          const clickedWord = pt.text ? pt.text.replace(/<\/?[^>]+(>|$)/g, "").trim().toLowerCase() : null;
+          if (clickedWord && findWord(clickedWord)) {
+            selectedWordB = clickedWord;
+            document.getElementById('select-word-b').value = clickedWord;
+            updateDistanceInspector();
+            render3DGraph();
+          }
+        }
+      });
+
+      renderClusterLegend();
+    }
+
+    function reset3DCamera() {
+      const update = {
+        'scene.camera.eye': { x: 1.5, y: 1.5, z: 1.2 }
+      };
+      Plotly.relayout('plot3d', update);
+    }
+
+    function toggleAllLabels() {
+      labelsAlwaysOn = !labelsAlwaysOn;
+      document.getElementById('btn-toggle-labels').innerText = labelsAlwaysOn ? "Labels: Always On" : "Labels: On Hover";
+      render3DGraph();
+    }
+
+    function updateProjection() {
+      currentProjectionMode = document.getElementById('projection-mode').value;
+      render3DGraph();
+    }
+
+    function renderClusterLegend() {
+      const container = document.getElementById('cluster-legend-badges');
+      const uniqueCats = [...new Set(vocabulary.map(v => v.category))];
+      container.innerHTML = uniqueCats.map(cat => {
+        const color = CLUSTER_COLORS[cat] || '#00f5ff';
+        return `
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-pixel bg-black border border-slate-700">
+            <span class="w-2 h-2 rounded-full" style="background-color: ${color}; box-shadow: 0 0 6px ${color};"></span>
+            <span class="text-slate-300">${cat}</span>
+          </span>
+        `;
+      }).join('');
+    }
+
+    /* =========================================================================
+       4. DISTANCE INSPECTOR & NEAREST NEIGHBORS (KNN)
+       ========================================================================= */
+
+    function findWord(token) {
+      return vocabulary.find(w => w.token.toLowerCase() === token.toLowerCase());
+    }
+
+    function populateWordDropdowns() {
+      const sortedTokens = [...vocabulary].sort((a, b) => a.token.localeCompare(b.token));
+      
+      const selects = [
+        'select-word-a', 
+        'select-word-b', 
+        'math-word-a', 
+        'math-word-b', 
+        'math-word-c',
+        'inspect-vector-select',
+        'blend-word-1',
+        'blend-word-2'
+      ];
+
+      selects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const currentVal = el.value;
+        el.innerHTML = sortedTokens.map(item => `
+          <option value="${item.token}">${item.token} (${item.category})</option>
+        `).join('');
+        if (currentVal && findWord(currentVal)) {
+          el.value = currentVal;
+        }
+      });
+
+      document.getElementById('select-word-a').value = selectedWordA;
+      document.getElementById('select-word-b').value = selectedWordB;
+      document.getElementById('math-word-a').value = 'king';
+      document.getElementById('math-word-b').value = 'man';
+      document.getElementById('math-word-c').value = 'woman';
+      document.getElementById('inspect-vector-select').value = selectedWordA;
+      document.getElementById('blend-word-1').value = 'robot';
+      document.getElementById('blend-word-2').value = 'man';
+
+      document.getElementById('metric-vocab-count').innerText = vocabulary.length;
+      document.getElementById('vocab-total-display').innerText = vocabulary.length;
+    }
+
+    function onWordSelected(target) {
+      if (target === 'a') {
+        selectedWordA = document.getElementById('select-word-a').value;
+      } else {
+        selectedWordB = document.getElementById('select-word-b').value;
+      }
+      updateDistanceInspector();
+      render3DGraph();
+    }
+
+    function setCompareWords(wordA, wordB) {
+      selectedWordA = wordA;
+      selectedWordB = wordB;
+      document.getElementById('select-word-a').value = wordA;
+      document.getElementById('select-word-b').value = wordB;
+      updateDistanceInspector();
+      render3DGraph();
+    }
+
+    function updateDistanceInspector() {
+      const itemA = findWord(selectedWordA);
+      const itemB = findWord(selectedWordB);
+      if (!itemA || !itemB) return;
+
+      const sim = cosineSimilarity(itemA.vector, itemB.vector);
+      const dist = euclideanDistance(itemA.vector, itemB.vector);
+      const clampedSim = Math.max(-1, Math.min(1, sim));
+      const angleRad = Math.acos(clampedSim);
+      const angleDeg = (angleRad * (180 / Math.PI)).toFixed(1);
+
+      document.getElementById('metric-cos-sim').innerText = sim.toFixed(4);
+      document.getElementById('metric-angle').innerText = `${angleDeg}°`;
+      document.getElementById('metric-euclidean').innerText = dist.toFixed(3);
+
+      const pct = Math.max(0, Math.min(100, ((sim + 1) / 2) * 100));
+      document.getElementById('metric-cos-bar').style.width = `${pct}%`;
+
+      let explanation = "";
+      if (sim > 0.85) {
+        explanation = "Extremely high semantic alignment. Vectors point in virtually the same directional cluster.";
+      } else if (sim > 0.5) {
+        explanation = "Moderate relatedness. Words share some latent features (e.g., animate entities or common domain), but differ in specifics.";
+      } else if (sim > 0.0) {
+        explanation = "Low similarity. Near-orthogonal directions in high-dimensional space; loosely related or distinct concepts.";
+      } else {
+        explanation = "Negative similarity / opposing vectors. The vectors point in diametrically divergent directions.";
+      }
+      document.getElementById('distance-explanation').innerText = explanation;
+
+      // Nearest Neighbors for Word A
+      document.getElementById('knn-target-label').innerText = `[${itemA.token}]`;
+      const neighbors = vocabulary
+        .filter(w => w.token !== itemA.token)
+        .map(w => ({
+          token: w.token,
+          category: w.category,
+          sim: cosineSimilarity(itemA.vector, w.vector)
+        }))
+        .sort((a, b) => b.sim - a.sim)
+        .slice(0, 5);
+
+      document.getElementById('knn-list').innerHTML = neighbors.map((n, i) => `
+        <div onclick="setCompareWords('${itemA.token}', '${n.token}')" class="flex items-center justify-between p-1.5 rounded y2k-inset hover:border-y2k-cyan cursor-pointer transition">
+          <div class="flex items-center gap-1.5">
+            <span class="text-y2k-pink text-[9px] font-pixel">#${i + 1}</span>
+            <span class="font-bold text-white font-orbitron">${n.token}</span>
+            <span class="text-[9px] text-slate-400">(${n.category})</span>
+          </div>
+          <span class="font-vt text-base text-y2k-acidgreen font-bold">${n.sim.toFixed(3)}</span>
+        </div>
+      `).join('');
+    }
+
+    /* =========================================================================
+       5. TOKENIZER SIMULATOR & VOCABULARY EXPLORER
+       ========================================================================= */
+
+    function tokenizeInput() {
+      const input = document.getElementById('tokenizer-input').value.trim();
+      if (!input) return;
+
+      const rawWords = input.split(/([.,!?;:\s]+)/).filter(s => s.trim().length > 0);
+      const tokens = [];
+      const tokenIds = [];
+
+      rawWords.forEach((word) => {
+        const clean = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const found = vocabulary.find(v => v.token.toLowerCase() === clean);
+        
+        if (found) {
+          tokens.push({
+            str: word,
+            id: found.id,
+            isVocab: true,
+            category: found.category
+          });
+          tokenIds.push(found.id);
+        } else if (clean.length > 4) {
+          const part1 = clean.slice(0, 3);
+          const part2 = "##" + clean.slice(3);
+          const id1 = Math.abs(hashString(part1)) % 40000 + 1000;
+          const id2 = Math.abs(hashString(part2)) % 40000 + 1000;
+          tokens.push({ str: part1, id: id1, isVocab: false, category: "Subword prefix" });
+          tokens.push({ str: part2, id: id2, isVocab: false, category: "Subword suffix" });
+          tokenIds.push(id1, id2);
+        } else {
+          const fallbackId = Math.abs(hashString(clean)) % 30000 + 2000;
+          tokens.push({
+            str: word,
+            id: fallbackId,
+            isVocab: false,
+            category: "Dynamic token"
+          });
+          tokenIds.push(fallbackId);
+        }
+      });
+
+      document.getElementById('token-count-badge').innerText = tokens.length;
+      
+      const pillsContainer = document.getElementById('token-pills-container');
+      const borderColors = ['border-y2k-cyan text-y2k-cyan', 'border-y2k-pink text-y2k-pink', 'border-y2k-acidgreen text-y2k-acidgreen', 'border-purple-400 text-purple-300', 'border-yellow-300 text-yellow-300'];
+
+      pillsContainer.innerHTML = tokens.map((t, idx) => {
+        const colorClass = borderColors[idx % borderColors.length];
+        return `
+          <div class="group relative inline-flex flex-col items-center px-3 py-1 rounded bg-black/80 border ${colorClass} font-mono text-xs transition transform hover:-translate-y-0.5 shadow-md">
+            <span class="font-bold font-orbitron">${escapeHtml(t.str)}</span>
+            <span class="text-[9px] font-pixel opacity-80">ID: ${t.id}</span>
+            <div class="absolute bottom-full mb-1 hidden group-hover:block z-30 w-44 bg-black border border-y2k-cyan text-slate-200 text-[10px] p-2 rounded shadow-2xl font-mono pointer-events-none">
+              <div><b>Token:</b> "${escapeHtml(t.str)}"</div>
+              <div><b>ID:</b> ${t.id}</div>
+              <div><b>Source:</b> ${t.isVocab ? 'Base Vocabulary' : 'BPE Subword Split'}</div>
+              <div><b>Cluster:</b> ${t.category}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('token-ids-raw').innerText = `[${tokenIds.join(', ')}]`;
+    }
+
+    function setTokenInput(text) {
+      document.getElementById('tokenizer-input').value = text;
+      tokenizeInput();
+    }
+
+    function copyTokenIds() {
+      const text = document.getElementById('token-ids-raw').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Token IDs copied to clipboard: ' + text);
+    }
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function renderVocabTable() {
+      filterVocabTable();
+    }
+
+    function filterVocabTable() {
+      const query = document.getElementById('vocab-search').value.toLowerCase().trim();
+      const cat = document.getElementById('vocab-category-filter').value;
+      const tbody = document.getElementById('vocab-table-body');
+
+      const filtered = vocabulary.filter(item => {
+        const matchesQuery = item.token.toLowerCase().includes(query) || (item.category && item.category.toLowerCase().includes(query));
+        const matchesCat = (cat === 'all') || (item.category === cat);
+        return matchesQuery && matchesCat;
+      });
+
+      tbody.innerHTML = filtered.map(item => {
+        const norm = vectorNorm(item.vector).toFixed(3);
+        const coords = projected3DCoords[item.token] || [0, 0, 0];
+        const isCustom = item.isCustom;
+        const color = CLUSTER_COLORS[item.category] || '#00f5ff';
+
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-2.5 px-4 text-y2k-cyan font-bold font-pixel text-[11px]">${item.id}</td>
+            <td class="py-2.5 px-4 font-orbitron">
+              <span class="font-bold text-white">${item.token}</span>
+              ${isCustom ? '<span class="ml-1.5 px-1 py-0.2 rounded bg-black text-y2k-acidgreen text-[8px] border border-y2k-acidgreen font-pixel">CUSTOM</span>' : ''}
+            </td>
+            <td class="py-2.5 px-4">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full" style="background-color: ${color}; box-shadow: 0 0 5px ${color}"></span>
+                <span class="text-slate-200">${item.category}</span>
+              </span>
+            </td>
+            <td class="py-2.5 px-4 text-slate-300">${norm}</td>
+            <td class="py-2.5 px-4 text-y2k-pink text-[11px]">(${coords[0].toFixed(2)}, ${coords[1].toFixed(2)}, ${coords[2].toFixed(2)})</td>
+            <td class="py-2.5 px-4 text-right space-x-2 font-orbitron text-[10px]">
+              <button onclick="setCompareWords('${item.token}', selectedWordB); switchTab('3d-graph')" class="text-y2k-cyan hover:underline">3D_VIEW</button>
+              <button onclick="inspectVectorFor('${item.token}')" class="text-y2k-pink hover:underline">INSPECT</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /* =========================================================================
+       6. VECTOR ARITHMETIC & EMBEDDING HEATMAP
+       ========================================================================= */
+
+    function computeVectorArithmetic() {
+      const wordA = document.getElementById('math-word-a').value;
+      const wordB = document.getElementById('math-word-b').value;
+      const wordC = document.getElementById('math-word-c').value;
+
+      const itemA = findWord(wordA);
+      const itemB = findWord(wordB);
+      const itemC = findWord(wordC);
+      if (!itemA || !itemB || !itemC) return;
+
+      const resultVector = new Array(16).fill(0);
+      for (let i = 0; i < 16; i++) {
+        resultVector[i] = itemA.vector[i] - itemB.vector[i] + itemC.vector[i];
+      }
+
+      const scored = vocabulary
+        .filter(w => w.token !== itemA.token && w.token !== itemB.token && w.token !== itemC.token)
+        .map(w => ({
+          token: w.token,
+          category: w.category,
+          sim: cosineSimilarity(resultVector, w.vector)
+        }))
+        .sort((a, b) => b.sim - a.sim)
+        .slice(0, 5);
+
+      const ranksContainer = document.getElementById('math-result-ranks');
+      ranksContainer.innerHTML = scored.map((match, i) => {
+        const isTop = i === 0;
+        return `
+          <div class="flex items-center justify-between p-2 rounded ${isTop ? 'bg-black/90 border-2 border-y2k-acidgreen shadow-lg shadow-y2k-acidgreen/20' : 'bg-black/60 border border-slate-800'}">
+            <div class="flex items-center gap-2.5">
+              <span class="w-5 h-5 rounded ${isTop ? 'bg-y2k-acidgreen text-black font-pixel' : 'bg-slate-800 text-slate-300 font-pixel'} font-bold flex items-center justify-center text-[10px]">
+                ${i + 1}
+              </span>
+              <div>
+                <span class="font-bold font-orbitron text-xs ${isTop ? 'text-y2k-acidgreen neon-green-glow' : 'text-white'}">${match.token}</span>
+                <span class="text-[10px] text-slate-400 ml-1.5">(${match.category})</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 font-vt">
+              <div class="w-20 bg-slate-900 rounded-sm h-2 hidden sm:block border border-slate-800">
+                <div class="bg-gradient-to-r from-y2k-cyan to-y2k-acidgreen h-2" style="width: ${Math.max(0, match.sim * 100)}%"></div>
+              </div>
+              <span class="text-base font-bold ${isTop ? 'text-y2k-acidgreen' : 'text-slate-300'}">${match.sim.toFixed(4)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setVectorFormula(a, b, c) {
+      document.getElementById('math-word-a').value = a;
+      document.getElementById('math-word-b').value = b;
+      document.getElementById('math-word-c').value = c;
+      computeVectorArithmetic();
+    }
+
+    function renderVectorHeatmap() {
+      const selectedToken = document.getElementById('inspect-vector-select').value;
+      const item = findWord(selectedToken);
+      if (!item) return;
+
+      const grid = document.getElementById('vector-heatmap-grid');
+      grid.innerHTML = item.vector.map((val, idx) => {
+        let bgStyle = '';
+        if (val >= 0) {
+          const intensity = Math.min(1, val);
+          bgStyle = `rgba(57, 255, 20, ${0.15 + intensity * 0.8})`;
+        } else {
+          const intensity = Math.min(1, Math.abs(val));
+          bgStyle = `rgba(255, 0, 127, ${0.15 + intensity * 0.8})`;
+        }
+
+        const feat = FEATURE_NAMES[idx];
+
+        return `
+          <div class="group relative p-1.5 rounded text-center font-mono text-xs border border-slate-800 hover:scale-105 transition" style="background-color: ${bgStyle}">
+            <div class="text-[9px] font-pixel text-slate-400">d${idx}</div>
+            <div class="font-bold font-orbitron text-white text-[11px]">${val > 0 ? '+' : ''}${val.toFixed(2)}</div>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-30 w-44 bg-black border border-y2k-cyan text-slate-200 text-[10px] p-2 rounded shadow-2xl pointer-events-none text-left font-sans">
+              <div class="font-bold text-y2k-cyan font-orbitron">Dim ${idx}: ${feat.name}</div>
+              <div class="text-slate-400">${feat.desc}</div>
+              <div class="mt-1 font-mono text-y2k-acidgreen">Value: ${val.toFixed(4)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('raw-vector-output').innerText = `[${item.vector.map(v => v.toFixed(3)).join(', ')}]`;
+    }
+
+    function inspectVectorFor(token) {
+      switchTab('embeddings');
+      document.getElementById('inspect-vector-select').value = token;
+      renderVectorHeatmap();
+    }
+
+    /* =========================================================================
+       7. ADD YOUR OWN WORDS FEATURE
+       ========================================================================= */
+
+    function renderFeatureSliders() {
+      const container = document.getElementById('feature-sliders-container');
+      container.innerHTML = FEATURE_NAMES.map(feat => `
+        <div class="y2k-inset p-2 rounded border border-slate-800 space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-grotesk">
+            <span class="font-bold text-slate-200">d${feat.id}: ${feat.name}</span>
+            <span id="slider-val-${feat.id}" class="font-vt text-sm text-y2k-acidgreen font-bold">0.00</span>
+          </div>
+          <input type="range" id="custom-dim-${feat.id}" min="-100" max="100" value="0" 
+                 oninput="onCustomSliderChange(${feat.id})" 
+                 class="w-full y2k-slider accent-y2k-acidgreen cursor-pointer">
+        </div>
+      `).join('');
+    }
+
+    function onCustomSliderChange(dimId) {
+      const val = (document.getElementById(`custom-dim-${dimId}`).value / 100).toFixed(2);
+      document.getElementById(`slider-val-${dimId}`).innerText = (val > 0 ? '+' : '') + val;
+    }
+
+    function randomizeCustomSliders() {
+      FEATURE_NAMES.forEach(f => {
+        const rand = (Math.random() * 1.6 - 0.8).toFixed(2);
+        document.getElementById(`custom-dim-${f.id}`).value = Math.round(rand * 100);
+        document.getElementById(`slider-val-${f.id}`).innerText = (rand > 0 ? '+' : '') + rand;
+      });
+    }
+
+    function updateBlendSlider() {
+      const ratio = document.getElementById('blend-slider').value;
+      document.getElementById('blend-val-label').innerText = `${100 - ratio}% / ${ratio}%`;
+    }
+
+    function applyWordBlend() {
+      const word1 = document.getElementById('blend-word-1').value;
+      const word2 = document.getElementById('blend-word-2').value;
+      const item1 = findWord(word1);
+      const item2 = findWord(word2);
+      if (!item1 || !item2) return;
+
+      const alpha = document.getElementById('blend-slider').value / 100;
+
+      for (let i = 0; i < 16; i++) {
+        const blended = (1 - alpha) * item1.vector[i] + alpha * item2.vector[i];
+        document.getElementById(`custom-dim-${i}`).value = Math.round(blended * 100);
+        document.getElementById(`slider-val-${i}`).innerText = (blended > 0 ? '+' : '') + blended.toFixed(2);
+      }
+    }
+
+    function submitCustomWord() {
+      const name = document.getElementById('new-word-name').value.trim().toLowerCase();
+      const cat = document.getElementById('new-word-category').value.trim() || 'Custom';
+
+      if (!name) {
+        alert('Please enter a word name.');
+        return;
+      }
+
+      if (findWord(name)) {
+        alert(`Word "${name}" already exists in the vocabulary!`);
+        return;
+      }
+
+      const vector = [];
+      for (let i = 0; i < 16; i++) {
+        vector.push(parseFloat((document.getElementById(`custom-dim-${i}`).value / 100).toFixed(3)));
+      }
+
+      const newId = 5000 + vocabulary.length + 1;
+      const newEntry = {
+        id: newId,
+        token: name,
+        category: cat,
+        vector: vector,
+        isCustom: true
+      };
+
+      vocabulary.push(newEntry);
+      customWords.push(newEntry);
+
+      populateWordDropdowns();
+      renderCustomWordsList();
+      recalculate3DPositions();
+      render3DGraph();
+      renderVocabTable();
+
+      document.getElementById('new-word-name').value = '';
+
+      selectedWordB = name;
+      document.getElementById('select-word-b').value = name;
+      updateDistanceInspector();
+      switchTab('3d-graph');
+    }
+
+    function quickAddWord(name, category, vector) {
+      if (findWord(name)) {
+        selectedWordB = name;
+        switchTab('3d-graph');
+        updateDistanceInspector();
+        render3DGraph();
+        return;
+      }
+
+      const newId = 5000 + vocabulary.length + 1;
+      const newEntry = {
+        id: newId,
+        token: name,
+        category: category,
+        vector: vector,
+        isCustom: true
+      };
+
+      vocabulary.push(newEntry);
+      customWords.push(newEntry);
+
+      populateWordDropdowns();
+      renderCustomWordsList();
+      recalculate3DPositions();
+      render3DGraph();
+      renderVocabTable();
+
+      selectedWordB = name;
+      document.getElementById('select-word-b').value = name;
+      updateDistanceInspector();
+      switchTab('3d-graph');
+    }
+
+    function renderCustomWordsList() {
+      document.getElementById('custom-words-count').innerText = customWords.length;
+      const container = document.getElementById('custom-words-list');
+      if (customWords.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-500 italic font-mono">No custom words added yet. Add one above!</span>';
+        return;
+      }
+
+      container.innerHTML = customWords.map(w => `
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-black border border-y2k-acidgreen text-xs font-mono text-y2k-acidgreen">
+          <span class="font-bold font-orbitron">${w.token}</span>
+          <span class="text-[9px] text-slate-400">(${w.category})</span>
+          <button onclick="removeCustomWord('${w.token}')" class="text-y2k-pink hover:text-white ml-1 font-bold">&times;</button>
+        </span>
+      `).join('');
+    }
+
+    function removeCustomWord(token) {
+      vocabulary = vocabulary.filter(w => w.token !== token);
+      customWords = customWords.filter(w => w.token !== token);
+      populateWordDropdowns();
+      renderCustomWordsList();
+      render3DGraph();
+      renderVocabTable();
+    }
+
+    function resetCustomWords() {
+      vocabulary = JSON.parse(JSON.stringify(INITIAL_VOCAB));
+      customWords = [];
+      populateWordDropdowns();
+      renderCustomWordsList();
+      render3DGraph();
+      renderVocabTable();
+    }
+
+    /* =========================================================================
+       8. SIMILARITY HEATMAP MATRIX
+       ========================================================================= */
+
+    function renderSimilarityHeatmap() {
+      const mode = document.getElementById('matrix-cluster-select').value;
+      let subset = [];
+
+      if (mode === 'royalty_vs_animals') {
+        subset = vocabulary.filter(w => w.category === 'Royalty' || w.category === 'Animals').slice(0, 10);
+      } else if (mode === 'tech_vs_food') {
+        subset = vocabulary.filter(w => w.category === 'Tech & AI' || w.category === 'Food & Nature').slice(0, 10);
+      } else if (mode === 'all') {
+        subset = vocabulary.slice(0, 18);
+      } else {
+        const featuredTokens = ['king', 'queen', 'man', 'woman', 'dog', 'cat', 'computer', 'robot', 'apple', 'pizza', 'happy', 'sad'];
+        subset = featuredTokens.map(t => findWord(t)).filter(Boolean);
+      }
+
+      const container = document.getElementById('similarity-heatmap-container');
+
+      let html = '<table class="min-w-full text-center text-xs font-mono border-collapse">';
+      html += '<thead><tr><th class="p-2 text-left text-y2k-cyan sticky left-0 bg-black border-b border-slate-800 font-pixel text-[10px]">WORDS</th>';
+      subset.forEach(w => {
+        html += `<th class="p-2 text-slate-200 border-b border-slate-800 transform -rotate-45 h-16 origin-bottom-left font-orbitron text-[10px]">${w.token}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      subset.forEach(rowWord => {
+        html += `<tr><td class="p-2 text-left font-bold text-white sticky left-0 bg-black border-r border-slate-800 font-orbitron text-xs">${rowWord.token}</td>`;
+        subset.forEach(colWord => {
+          const sim = cosineSimilarity(rowWord.vector, colWord.vector);
+          let bg = '';
+          if (sim >= 0) {
+            bg = `rgba(57, 255, 20, ${0.12 + sim * 0.85})`;
+          } else {
+            bg = `rgba(255, 0, 127, ${0.12 + Math.abs(sim) * 0.85})`;
+          }
+          html += `
+            <td class="p-2 border border-slate-900 hover:ring-2 hover:ring-y2k-cyan transition" 
+                style="background-color: ${bg}" 
+                title="${rowWord.token} &harr; ${colWord.token}: ${sim.toFixed(3)}">
+              <span class="text-[11px] font-bold text-white font-vt">${sim.toFixed(2)}</span>
+            </td>
+          `;
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    /* =========================================================================
+       9. STEP-BY-STEP PIPELINE GUIDE WALKTHROUGH
+       ========================================================================= */
+
+    const PIPELINE_STEPS = {
+      1: {
+        title: "Stage 1: Input Text & BPE Tokenization",
+        badge: "Characters &rarr; Token IDs",
+        html: `
+          <div class="space-y-3 text-xs leading-relaxed">
+            <p class="text-slate-200">
+              Computers and neural networks cannot directly process raw characters or strings. The input string must first be broken down into discrete numerical building blocks called <b>Tokens</b>.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 y2k-inset rounded border border-slate-800 font-mono">
+              <div>
+                <span class="text-slate-400 text-[10px] font-pixel">INPUT_PROMPT:</span>
+                <div class="text-y2k-cyan font-bold font-orbitron">"The king ruled"</div>
+              </div>
+              <div>
+                <span class="text-slate-400 text-[10px] font-pixel">TOKEN_IDS:</span>
+                <div class="text-y2k-acidgreen font-bold font-vt text-base">[464, 4746, 12845]</div>
+              </div>
+            </div>
+            <div class="p-3 bg-black/60 border border-y2k-cyan/40 rounded text-slate-300">
+              💡 <b>Why Subwords?</b> Modern LLMs use algorithms like <i>Byte-Pair Encoding (BPE)</i> or <i>WordPiece</i>. Rare words like "unbelievably" are chunked into <code>un</code> + <code>believ</code> + <code>##ably</code>, preventing out-of-vocabulary errors while bounding the dictionary size (typically ~32,000 to ~128,000 tokens).
+            </div>
+          </div>
+        `
+      },
+      2: {
+        title: "Stage 2: Embedding Matrix Lookup",
+        badge: "Discrete IDs &rarr; Continuous Dense Vectors",
+        html: `
+          <div class="space-y-3 text-xs leading-relaxed">
+            <p class="text-slate-200">
+              Once tokenized, each integer ID serves as an index to lookup a row in the model's <b>Embedding Matrix</b> $E \\in \\mathbb{R}^{V \\times d}$ (where $V$ is vocabulary size and $d$ is embedding dimension, e.g. 4096 in LLaMA-3).
+            </p>
+            <div class="p-3 y2k-inset rounded border border-slate-800 font-mono text-center">
+              <span class="text-y2k-pink font-bold font-orbitron">Token ID 4746 ('king')</span> &xrarr; <span class="text-y2k-acidgreen font-bold">[+0.95, -0.20, +0.10, ..., +0.60] &in; &reals;<sup>d</sup></span>
+            </div>
+            <div class="p-3 bg-black/60 border border-y2k-pink/40 rounded text-slate-300">
+              💡 <b>Continuous Semantics:</b> Unlike one-hot vectors which are all mutually orthogonal and equidistant, learned embeddings place semantically related tokens closer together in high-dimensional vector space.
+            </div>
+          </div>
+        `
+      },
+      3: {
+        title: "Stage 3: Positional Encoding Addition",
+        badge: "Adding Sequence Order to Vectors",
+        html: `
+          <div class="space-y-3 text-xs leading-relaxed">
+            <p class="text-slate-200">
+              Standard Self-Attention is permutation invariant: the phrase <i>"Dog bites man"</i> would look identical to <i>"Man bites dog"</i> without order information.
+            </p>
+            <div class="p-3 y2k-inset rounded border border-slate-800 font-mono text-center">
+              <span class="text-y2k-cyan font-bold">x<sub>pos</sub> = Embedding(Token) + PositionalEncoding(pos)</span>
+            </div>
+            <div class="p-3 bg-black/60 border border-purple-500/40 rounded text-slate-300">
+              💡 <b>RoPE & Sinusoidal Embeddings:</b> Contemporary architectures use Rotary Position Embeddings (RoPE) to encode relative token distances directly into attention dot-products.
+            </div>
+          </div>
+        `
+      },
+      4: {
+        title: "Stage 4: Transformer Self-Attention Layers",
+        badge: "Contextualizing Tokens via Dot-Products",
+        html: `
+          <div class="space-y-3 text-xs leading-relaxed">
+            <p class="text-slate-200">
+              Tokens do not remain static. In each Transformer block, each token projects into <b>Query (Q)</b>, <b>Key (K)</b>, and <b>Value (V)</b> vectors. The model calculates pairwise similarity using the scaled dot product:
+            </p>
+            <div class="p-3 y2k-inset rounded border border-slate-800 font-mono text-center text-yellow-300 font-bold font-orbitron">
+              Attention(Q, K, V) = softmax( (Q &bull; K<sup>T</sup>) / &radic;d<sub>k</sub> ) &bull; V
+            </div>
+            <div class="p-3 bg-black/60 border border-yellow-500/40 rounded text-slate-300">
+              💡 <b>Dynamic Context:</b> The word "bank" in "river bank" absorbs river features, while in "deposit money at bank" it absorbs financial features.
+            </div>
+          </div>
+        `
+      },
+      5: {
+        title: "Stage 5: Output Projection, Logits & Softmax",
+        badge: "Hidden States &rarr; Next-Token Probability",
+        html: `
+          <div class="space-y-3 text-xs leading-relaxed">
+            <p class="text-slate-200">
+              After passing through all Transformer layers, the final hidden state vector of the last token is multiplied by the unembedding matrix $W_{vocab}^T$ to produce raw scores (<b>Logits</b>) for every token in the vocabulary.
+            </p>
+            <div class="p-3 y2k-inset rounded border border-slate-800 font-mono text-center">
+              <span class="text-y2k-acidgreen font-bold font-orbitron">P(w<sub>i</sub> | context) = exp(z<sub>i</sub> / T) / &sum; exp(z<sub>j</sub> / T)</span>
+            </div>
+            <div class="p-3 bg-black/60 border border-y2k-acidgreen/40 rounded text-slate-300">
+              💡 <b>Sampling & Temperature:</b> Softmax transforms logits into a valid probability distribution summing to 1.0. Temperature $T$ scales entropy: lower temperature produces deterministic answers, while higher temperature increases creativity.
+            </div>
+          </div>
+        `
+      }
+    };
+
+    function selectPipelineStep(stepNum) {
+      for (let i = 1; i <= 5; i++) {
+        const card = document.getElementById(`step-card-${i}`);
+        if (i === stepNum) {
+          card.classList.add('border-y2k-cyan');
+          card.classList.remove('border-slate-800');
+        } else {
+          card.classList.remove('border-y2k-cyan');
+          card.classList.add('border-slate-800');
+        }
+      }
+
+      const data = PIPELINE_STEPS[stepNum];
+      document.getElementById('pipeline-step-detail').innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h3 class="text-sm font-bold font-orbitron text-white">${data.title}</h3>
+          <span class="text-[10px] font-pixel px-2 py-0.5 rounded bg-black text-y2k-cyan border border-y2k-cyan">${data.badge}</span>
+        </div>
+        ${data.html}
+      `;
+    }
+
+    /* =========================================================================
+       10. TAB NAVIGATION & INITIALIZATION
+       ========================================================================= */
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-gradient-to-r', 'from-y2k-cyan/30', 'to-y2k-purple/40', 'border-y2k-cyan', 'shadow-lg', 'shadow-y2k-cyan/20');
+        btn.classList.add('opacity-80');
+      });
+
+      const content = document.getElementById(`view-${tabId}`);
+      if (content) content.classList.remove('hidden');
+
+      const btn = document.getElementById(`tab-btn-${tabId}`);
+      if (btn) {
+        btn.classList.add('bg-gradient-to-r', 'from-y2k-cyan/30', 'to-y2k-purple/40', 'border-y2k-cyan', 'shadow-lg', 'shadow-y2k-cyan/20');
+        btn.classList.remove('opacity-80');
+      }
+
+      if (tabId === '3d-graph') {
+        setTimeout(() => {
+          Plotly.Plots.resize('plot3d');
+        }, 50);
+      } else if (tabId === 'vocab') {
+        renderVocabTable();
+        tokenizeInput();
+      } else if (tabId === 'embeddings') {
+        computeVectorArithmetic();
+        renderVectorHeatmap();
+      } else if (tabId === 'custom-word') {
+        renderFeatureSliders();
+        renderCustomWordsList();
+      } else if (tabId === 'similarity-lab') {
+        renderSimilarityHeatmap();
+      } else if (tabId === 'pipeline-guide') {
+        selectPipelineStep(1);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      populateWordDropdowns();
+      renderFeatureSliders();
+      renderCustomWordsList();
+      updateDistanceInspector();
+      render3DGraph();
+      tokenizeInput();
+      renderVocabTable();
+      computeVectorArithmetic();
+      renderVectorHeatmap();
+      renderSimilarityHeatmap();
+      selectPipelineStep(1);
+
+      window.addEventListener('resize', () => {
+        Plotly.Plots.resize('plot3d');
+      });
+    });
+  </script>
+</body>
+</html>
